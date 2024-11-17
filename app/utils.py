@@ -1,9 +1,10 @@
 import pymysql
-
-host = 'localhost'
-user = 'root'
-password = '2912'
-db_name = 'projectdb'
+from dotenv import load_dotenv
+import os
+host = os.getenv('HOST')
+user = os.getenv('USER')
+password = os.getenv('PASSWORD')
+db_name = os.getenv('DB_NAME')
 
 def get_db_connection():
     try:
