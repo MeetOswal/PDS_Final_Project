@@ -1,4 +1,6 @@
 from flask import Flask
+from dotenv import load_dotenv
+import os
 from app.registerUser import RegisterUser
 from app.login import login
 from app.getItem import getItem
@@ -11,9 +13,11 @@ from app.getUser import user
 from app.phone import phone
 from app.createOrder import createOrder
 
+load_dotenv()
+
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'meet_oswal'
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
     app.register_blueprint(RegisterUser)
     app.register_blueprint(login)
