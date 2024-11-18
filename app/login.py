@@ -36,12 +36,14 @@ def loginAuth():
                 "error": "Invalid username or password"
             }
             return jsonify(response), 401
+        
         elif result and bcrypt.checkpw(password.encode('utf-8'), result['password'].encode('utf-8')):
             session['username'] = username
             response = {
                 "message": "Login successful"
             }
             return jsonify(response), 200
+        
         else:
             response = {
                 "error": "Invalid username or password"
@@ -75,4 +77,3 @@ def logoutUser():
             "error" : "Server Not Found"
         }
         return jsonify(response), 500
-

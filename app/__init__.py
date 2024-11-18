@@ -18,7 +18,11 @@ load_dotenv()
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-
+    app.config.update(
+    SESSION_COOKIE_SECURE=True,  
+    SESSION_COOKIE_SAMESITE='None',
+    SESSION_COOKIE_PATH = "/"
+    )
     app.register_blueprint(RegisterUser)
     app.register_blueprint(login)
     app.register_blueprint(getItem)
