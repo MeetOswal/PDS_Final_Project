@@ -69,6 +69,7 @@ export function Login() {
         </button>
         {error ? <div>{error}</div> : <></>}
       </form>
+      <Link to="/register">Register</Link>
     </>
   );
 }

@@ -15,9 +15,8 @@ def registerUser():
         email = request.form.get('email')
         role = request.form.get('role')
         if request.form.get('phone'):
-            phone = request.form.get('phone')
+            phone = request.form.get('phone').split(",")
         
-
         # not null checked in frontend
 
         salt = bcrypt .gensalt()
@@ -26,11 +25,24 @@ def registerUser():
         connection = get_db_connection()
         if not connection:
             response = {
-                "database error": "Cannot Connect to Database"
+                "error": "Cannot Connect to Database"
             }
             return jsonify(response), 500 
         
         with connection.cursor() as cursor:
+            check_query = '''
+            select *
+            from personphone
+            where phone = %s
+            '''
+            if phone:
+                for i in phone:
+                    cursor.execute(check_query, (i))
+                    result = cursor.fetchone()
+                    if result:
+                        connection.close()
+                        return jsonify({"error" : "Phone Number already exists"}), 409
+            
             query = '''
             insert into person (userName, password, fname, lname, email) values
             (%s, %s, %s, %s, %s)
@@ -39,6 +51,7 @@ def registerUser():
             insert into act (username, roleID) values
             (%s, %s)
             '''
+
             query3 = '''
             insert into personphone (username, phone) values
             (%s, %s)
@@ -61,13 +74,13 @@ def registerUser():
     except datababaseError as e:
         print(e)
         response = {
-            "database error": str(e)
+            "error": str(e)
         }
         return jsonify(response), 500
     except Exception as e:
         print(e)
         response = {
-            "server error": "Cannot Connect to Server"
+            "error": "Cannot Connect to Server"
         }
         return jsonify(response), 500
     

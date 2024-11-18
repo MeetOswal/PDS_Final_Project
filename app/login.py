@@ -16,7 +16,7 @@ def loginAuth():
         connection = get_db_connection()
         if not connection:
             response = {
-                "database error": "Cannot Connect to Database"
+                "error": "Cannot Connect to Database"
             }
             return jsonify(response), 500
         
@@ -59,7 +59,7 @@ def loginAuth():
     except Exception as e:
         print(e)
         response = {
-            "server error": "Cannot Login"
+            "error": "Cannot Login"
         }
         return jsonify(response), 500
     

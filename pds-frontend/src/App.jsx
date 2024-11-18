@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Logout } from "../components/logout";
+import validator from "validator";
+
 const getUser = async () => {
   try {
     const response = await axios.get("http://127.0.0.1:5000/api/profile", {
@@ -9,14 +11,13 @@ const getUser = async () => {
     });
     return response.data;
   } catch (error) {
-    return error.response.data;
+      return error.response.data;
   }
 };
 
 function App() {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
 
   const logoutfunction = (logout) => {
@@ -40,15 +41,16 @@ function App() {
     fetchUserData();
   }, []);
 
+  const unescapeHTML = (input) => {
+    return validator.unescape(input); // Unescape HTML entities like &lt; -> <
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
-  if (error) {
-    return <div>{error}</div>;
-  }
   return (
     <>
-      <div>Welcome, {userData}</div>
+      <div>Welcome, {unescapeHTML(userData)}</div>
       <div>
         {!loggedIn ? (
           <Link to="/login">Login</Link>

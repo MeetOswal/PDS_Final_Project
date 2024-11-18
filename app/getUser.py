@@ -14,7 +14,7 @@ def get_profile():
         connection = get_db_connection()
         if not connection:
             response = {
-                "database error": "Cannot Connect to Database"
+                "error": "Cannot Connect to Database"
             }
             return jsonify(response), 500
             
@@ -28,20 +28,17 @@ def get_profile():
             result = cursor.fetchall()
 
         connection.close()
-        if not result:
-            return jsonify({"message" : "User not loged in"}), 200
-        else:
-            response = {
-                "username" : result[0]["userName"],
-                "fname" : result[0]['fname'],
-                "laname" : result[0]['lname'],
-                "email" : result[0]['email'],
-                "phone" : []
-            }
-            for idx, i in enumerate(result):
-                response['phone'].append({
-                    idx : i['phone']
-                })
+        response = {
+            "username" : result[0]["userName"],
+            "fname" : result[0]['fname'],
+            "laname" : result[0]['lname'],
+            "email" : result[0]['email'],
+            "phone" : []
+        }
+        for idx, i in enumerate(result):
+            response['phone'].append({
+                idx : i['phone']
+            })
             
         return jsonify(response), 200
     
