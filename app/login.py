@@ -35,7 +35,7 @@ def loginAuth():
             response = {
                 "error": "Invalid username or password"
             }
-            return jsonify(response), 401
+            return jsonify(response), 404
         
         elif result and bcrypt.checkpw(password.encode('utf-8'), result['password'].encode('utf-8')):
             session['username'] = username
@@ -48,7 +48,7 @@ def loginAuth():
             response = {
                 "error": "Invalid username or password"
             }
-            return jsonify(response), 401
+            return jsonify(response), 404
 
     except datababaseError as e:
         response = {

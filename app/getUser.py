@@ -7,6 +7,9 @@ user = Blueprint('user', __name__)
 @user.route('/api/profile', methods = ['GET'])
 def get_profile():
     try:
+        if 'username' not in session:
+            return jsonify({'error': 'User not found'}), 200
+        
         username = session['username']
         connection = get_db_connection()
         if not connection:
@@ -44,9 +47,6 @@ def get_profile():
     
     except datababaseError as e:
         return jsonify({'error': str(e)}), 500
-    
-    except KeyError as e:
-        return jsonify({'error': 'User not found'}), 500
     
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
