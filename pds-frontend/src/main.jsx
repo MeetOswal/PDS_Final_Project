@@ -4,12 +4,13 @@ import App from './App.jsx'
 import { Login } from '../components/login.jsx';
 import {RouterProvider, createBrowserRouter} from "react-router-dom";
 import { RegisterUser } from '../components/registerUser.jsx';
-
+import { GetItem } from '../components/GetItem.jsx';
+import { GetOrder } from '../components/GetOrder.jsx';
+import { OrderHistory } from '../components/orderHistory.jsx';
 const router = createBrowserRouter([
   {
     path : '/',
     element : <App/>,
-    
   },
   {
     path: 'login',
@@ -18,6 +19,18 @@ const router = createBrowserRouter([
   {
     path: 'register',
     element: <RegisterUser/>
+  },
+  {
+    path: "/get-item",
+    element : <GetItem/>
+  },
+  {
+    path: "/order-details",
+    element : <GetOrder/>
+  },
+  {
+    path: "/order-history",
+    element: <OrderHistory/>
   }
 ])
 

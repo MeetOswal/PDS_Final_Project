@@ -7,6 +7,12 @@ getOrderHistory = Blueprint('orderHistory', __name__)
 @getOrderHistory.route('/api/orderhistory', methods = ['GET'])
 def getOrderHistory_function():
     try:
+        if 'username' not in session:
+            response = {
+                'error' : 'User not logined'
+            }
+            return jsonify(response), 404
+        
         username = session['username']
         connection = get_db_connection()
         if not connection:
@@ -52,9 +58,6 @@ def getOrderHistory_function():
         
     except datababaseError as e:
         return jsonify({'error' : str(e)}), 500
-    
-    except KeyError as e:
-        return jsonify({'error' : 'User not Found'}),404
     
     except Exception as e:
         return jsonify({'error' : str(e)}), 500

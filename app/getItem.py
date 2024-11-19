@@ -8,12 +8,18 @@ getItem = Blueprint('getitem', __name__)
 @getItem.route('/api/getitem/<int:item_id>', methods = ['GET'])
 def getItem_function(item_id):
     try:
-        username = session['username']
+        if 'username' not in session:
+            response = {
+                'error' : 'User not logined'
+            }
+            return jsonify(response), 404
+
+        _ = session['username']
 
         connection = get_db_connection()
         if not connection:
             response = {
-                "database error": "Cannot Connect to Database"
+                "error": "Cannot Connect to Database"
             }
             return jsonify(response), 500
         with connection.cursor() as cursor:
@@ -56,11 +62,7 @@ def getItem_function(item_id):
             'error' : str(e)
         }
         return jsonify(response), 500
-    except KeyError as e:
-        response = {
-                    'error' : 'User not logined'
-                }
-        return jsonify(response), 401
+        
     except Exception as e:
             response = {
                 'error' : str(e)

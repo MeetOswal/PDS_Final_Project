@@ -8,7 +8,7 @@ user = Blueprint('user', __name__)
 def get_profile():
     try:
         if 'username' not in session:
-            return jsonify({'error': 'User not found'}), 200
+            return jsonify({'error': 'User not found'}), 404
         
         username = session['username']
         connection = get_db_connection()

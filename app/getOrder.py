@@ -7,7 +7,13 @@ getOrder = Blueprint('getorder', __name__)
 @getOrder.route('/api/order/<int:order_id>', methods = ['GET'])
 def getOrder_function(order_id):
     try:
-        username = session['username']
+        if 'username' not in session:
+            response = {
+            'error' : 'User Not Found'
+            }
+            return jsonify(response), 404
+        
+        _ = session['username']
         connection = get_db_connection()
         if not connection:
             response = {
@@ -30,7 +36,7 @@ def getOrder_function(order_id):
         connection.close()
         if not result:
             response = {
-                'error': 'order not found'
+                'error': 'Order Not Found'
             }
             return jsonify(response), 404
         else:
@@ -64,11 +70,6 @@ def getOrder_function(order_id):
         }
         return jsonify(response), 500
         
-    except KeyError as e:
-        response = {
-            'error' : 'User Not Found'
-        }
-        return jsonify(response), 500
     except Exception:
         response = {
             'error' : str(e)
