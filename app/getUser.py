@@ -4,6 +4,23 @@ from pymysql import MySQLError as datababaseError
 
 user = Blueprint('user', __name__)
 
+'''
+API to get Information for a perticular Item
+Called on Landing Page
+
+Input:
+None
+
+Output:
+1. User Infromation - 200
+    User Detiails - except password :)
+    
+2. Not Found Error -404
+3. Database Connection -500
+4. Server Error - 500
+5. Database Error - 500
+6. Session Error - 404
+'''
 @user.route('/api/profile', methods = ['GET'])
 def get_profile():
     try:

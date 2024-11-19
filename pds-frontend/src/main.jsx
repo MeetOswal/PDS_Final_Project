@@ -7,6 +7,8 @@ import { RegisterUser } from '../components/registerUser.jsx';
 import { GetItem } from '../components/GetItem.jsx';
 import { GetOrder } from '../components/GetOrder.jsx';
 import { OrderHistory } from '../components/orderHistory.jsx';
+import { Category } from '../components/Categories.jsx';
+import { Filter } from '../components/Filters.jsx';
 const router = createBrowserRouter([
   {
     path : '/',
@@ -30,7 +32,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/order-history",
-    element: <OrderHistory/>
+    element : <OrderHistory/>
+  },
+  {
+    path: "/categories",
+    element : <Category/>
+  },
+  {
+    path : "/filter",
+    element : <Filter/>
   }
 ])
 

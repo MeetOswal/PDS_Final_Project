@@ -6,30 +6,50 @@ import json
 
 addDonation = Blueprint('add_donation', __name__)
 
+'''
+API to verfiy if the seesion user has a role of Staff
+Called before creating a donation as only staff as the right to insert donation
+
+Input: 
+No input
+
+Output:
+1. Ok Message - 200
+2. Session user not a Staff - 404
+3. Database Connetion - 500
+4. Seesion not found - 404
+5. Server Error - 500
+6. Database Error - 500
+'''
 @addDonation.route('/api/check/supervisor', methods = ['GET'])
 def SupervisorAuth():
     try:
         username = session['username']
         connection = get_db_connection()
+
         if not connection:
             response = {
                 "database error": "Cannot Connect to Database"
             }
             return jsonify(response), 500
+        
         with connection.cursor() as cursor:
             query = '''
             select *
             from act
             where username = %s
-            and roleID = 'Supervisor'
+            and roleID = 'Staff'
             '''
             cursor.execute(query, (username))
             result = cursor.fetchone()
+
         connection.close()
+
         if result:
             return jsonify({'message' : 'OK'}), 200
         else:
-            return jsonify({'error': 'Supervisor not found'}), 401
+            return jsonify({'error': 'Not A Staff'}), 401
+        
     except datababaseError as e:
         return jsonify({'error': str(e)}), 500
     except KeyError as e:
@@ -37,6 +57,21 @@ def SupervisorAuth():
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
 
+'''
+API to verfiy if the given username has a role of Donor
+Called before creating a donation
+
+Input: 
+donor username as URL parameter
+
+Output:
+1. Ok Message - 200
+2. Not found error - 404
+3. Database Connetion - 500
+4. Seesion not found - 404
+5. Server Error - 500
+6. Database Error - 500
+'''
 @addDonation.route('/api/check/donator/<username>', methods = ['GET'])
 def donatorAuth(username):
     try:
@@ -71,6 +106,28 @@ def donatorAuth(username):
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
 
+'''
+API to donate items
+
+input :
+all item details:
+1. Item Description - Text
+2. Color - Text
+3. IsNew - 1/0
+4. hasPieces - 1/0
+5 Material - text
+6 Main Category - Text
+7 Sub Categoory - Text
+8 Photo - img
+9 Pieces Info - JSON with piece Information and Location information
+10. Donate Date - YYYY-MM-DD
+
+Output:
+1. throw error is no database connection - 500
+2. throw error is no session found - 404
+3. throw database errors - 500
+4. Send Message : Item Donated - 500
+'''
 @addDonation.route('/api/donate/', methods = ['POST'])
 def addDonation_function():
     try:
@@ -97,11 +154,12 @@ def addDonation_function():
         connection = get_db_connection()
         if not connection:
             response = {
-                "database error": "Cannot Connect to Database"
+                "error": "Cannot Connect to Database"
             }
             return jsonify(response), 500
         
         with connection.cursor() as cursor:
+            # Qurry to Create Item
             query = '''
             insert into Item (iDescription, photo, color, isNew, hasPieces, material, mainCategory, subCategory) values
             (%s, %s, %s, %s, %s, %s, %s, %s)
@@ -109,8 +167,10 @@ def addDonation_function():
             cursor.execute(query, (item, photo_binary, color, isNew, hasPieces, material, mainCategory, subCatrgory))
             connection.commit()
             
+            # get greated item ID
             last_item_id = cursor.lastrowid
-            print(last_item_id)
+
+            # create Donation with username and itemID
             query2 = '''
             insert into DonatedBy (ItemID, userName, donateDate) values
             (%s, %s, %s)
@@ -118,6 +178,7 @@ def addDonation_function():
             cursor.execute(query2, (last_item_id, donor, donateDate))
             connection.commit()
             
+            # Store the Pieces Information 
             query3 = '''
             insert into Piece (ItemID, pieceNum, pDescription, length, width, height, roomNum, shelfNum, pNotes) values
             (%s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -128,11 +189,11 @@ def addDonation_function():
 
         connection.close()
 
-        return jsonify({'message' : 'item donation created'}) ,200
+        return jsonify({'message' : 'item donated'}) ,200
     
     except datababaseError as e:
         return jsonify({' Database error' : str(e)}), 500
     except KeyError as e:
-        return jsonify({'error' : 'User not Found'}), 500
+        return jsonify({'error' : 'User not Found'}), 404
     except Exception as e:
         return jsonify({'Server error' : str(e)}), 500

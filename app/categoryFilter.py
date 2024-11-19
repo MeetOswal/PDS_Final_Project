@@ -3,13 +3,33 @@ from app.utils import get_db_connection
 from pymysql import MySQLError as datababaseError
 from itertools import groupby
 import base64
+import json
 
 CategoryFilter = Blueprint('categoryFilter', __name__)
 
+'''
+API to get the Category and SubCategory Catalog
+
+Input:
+None
+
+Ouput:
+1. Data Catalog - 200
+2. Seesion Not Found - 404
+3. Database Connection - 500
+4. Server Error - 500
+5. Database Error - 500
+
+'''
 @CategoryFilter.route('/api/getcategory', methods = ['GET'])
 def getCategory():
     try: 
-        username = session['username']
+        if 'username' not in session:
+            response = {
+                'error' : 'User not logined'
+            }
+            return jsonify(response), 404
+
         connection = get_db_connection()
         if not connection:
             response = {
@@ -34,7 +54,7 @@ def getCategory():
         for key, group in groupby(result, key = lambda x: x['mainCategory']):
             category_data['categories'].append({
                 'category' : key,
-                'sub_category': [{idx: i['subCategory']} for idx, i in enumerate(group)]
+                'sub_category': [i['subCategory'] for i in group]
             })
 
         return jsonify(category_data), 200
@@ -42,70 +62,106 @@ def getCategory():
     except datababaseError as e:
         return jsonify({'error' : str(e)}), 500
     
-    except KeyError as e:
-        return jsonify({'error' : 'User not Found'}),404
-    
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
-    
+
+'''
+API to get Filtered Items Base on Category and SubCategory
+
+Input:
+Filter Parameters - JSON Object
+    Category Name as key and Array as Values, where array will contain selected sub-categories
+
+Output:
+1. Items based on filter / no filter 200
+2. Seesion error - 404
+3. Server Error - 500
+5. Database Connection - 500
+6. Database Error - 500
+'''    
     
 
-@CategoryFilter.route('/api/category', methods = ['GET'])
+@CategoryFilter.route('/api/category', methods = ['POST'])
 def categoryFilter():
     try:
-        username = session['username']
-        category = request.args['category']
-        sub_category = request.args['sub_category']
+        if 'username' not in session:
+            response = {
+                'error' : 'User Not Logined'
+            }
+            return jsonify(response), 404
+        
 
-        category = category.split('&')
-        if sub_category:
-            sub_category = sub_category.split('&')
-        else:
-            sub_category = []
-
-        if len(category) < 1:
-            return jsonify({'message' : 'no category selected'}), 200
+        data = request.form.get('data')
+        # Convert Json to Dict.
+        data = json.loads(data)
 
         connection = get_db_connection()
         if not connection:
             response = {
-                "database error": "Cannot Connect to Database"
+                "error": "Cannot Connect to Database"
             }
             return jsonify(response), 500
         
         with connection.cursor() as cursor:
+            # filter parameters for parametrized query
+            queryParameters = []
+
+            # Parameterized Query 
+            '''
+            Sample:
+
+            SELECT * 
+            FROM item
+            WHERE (mainCategory = 'Clothing' AND subCategory IN ('Men'))
+            OR (mainCategory = 'Books') 
+
+            '''
             query = '''
             select *
             from item
-            where (mainCategory = %s
             '''
-            for _ in range(1, len(category)):
-                query += ''' or mainCategory = %s'''
-            query += ')'
+            if data: # in case not filter applied
+                query += 'where'
 
-            if len(sub_category) > 0:
-                query += ' and ( subCategory = %s'
-                for _ in range(1, len(sub_category)):
-                    query += ''' or subCategory = %s'''
-                query += ')'
+                for category,sub_category in data.items():
+                    query += "( mainCategory = %s"
 
-            cursor.execute(query, tuple(category + sub_category))
+                    queryParameters.append(category)
+                    """
+                    Every %s corresponds to a input parmater and it is in accepted in sequence, hence we append the category 
+                    to variable to pass it when query is executed
+                    """
+
+                    if len(sub_category) > 0: # in case no subCategory choosen
+                        query += "and subCategory in ( %s "
+                        queryParameters.append(sub_category[0])
+
+                        for idx in range(1, len(sub_category)):
+                            query += ", %s"
+                            queryParameters.append(sub_category[idx]) 
+                        query += ")" 
+                    # SubCategor Part Completed for 1 main Category
+
+                    query += ") or " 
+                    # 1 Main Category Part Completed
+                
+                query = query[:-4]  # remove the last OR from the query
+                    
+            cursor.execute(query, tuple(queryParameters)) # Execute the query with prameterized query and its parmameters
             result = cursor.fetchall()
         
         connection.close()
 
         if not result:
-            return jsonify({"message" : "No Item Found"}), 200
+            return jsonify({"error" : "No Item Found"}), 404
 
-        for item in result:
+        for item in result: # enocede photo to a base 64 as we cannot send binary image string as json.
             item['photo'] = base64.b64encode(item['photo']).decode('utf-8') 
+            
         return jsonify(result), 200
     
     except datababaseError as e:
         return jsonify({'error' : str(e)}), 500
-    
-    except KeyError as e:
-        return jsonify({'error' : 'User not Found'}),404
     
     except Exception as e:
         return jsonify({'error' : str(e)}), 500

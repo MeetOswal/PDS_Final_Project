@@ -5,6 +5,22 @@ import bcrypt
 
 login = Blueprint('login', __name__)
 
+'''
+API to login to the system and generate session
+
+Input:
+username
+password
+
+Output:
+1. Seesion Infromation with Success Message- 200
+
+2. Failure Message -404
+3. Database Connection -500
+4. Server Error - 500
+5. Database Error - 500
+6. Session Error - 404
+'''
 @login.route('/api/login', methods = ['POST'])
 def loginAuth():
     try:
@@ -62,10 +78,25 @@ def loginAuth():
             "error": "Cannot Login"
         }
         return jsonify(response), 500
-    
+
+"""
+Logout API
+Input:
+None
+Ouptut:
+1. OK Message with deletion of Session. 200
+2. Server Error - 500
+3. Session Error - 404
+"""
 @login.route('/api/logout', methods = ['GET'])
 def logoutUser():
     try:
+        if 'username' not in session:
+            response = {
+                "error" : "User Not LogedIn"
+            }
+            return jsonify(response), 404
+        
         session.pop('username')
         response = {
             "message": "Logout Succeful"

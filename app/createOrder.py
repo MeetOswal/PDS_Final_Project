@@ -5,16 +5,31 @@ from datetime import datetime
 
 createOrder = Blueprint('createorder', __name__)
 
+'''
+API to check if a given username has a role of client
+
+Input:
+1. Username as URL parameter
+
+Output:
+1. Ok Message - 200
+2. Session Error - 404
+3. Database Connection -500
+4. Server Error - 500
+5. Database Error - 500
+'''
 @createOrder.route('/api/check/client/<username>', methods = ['GET'])
 def ClientAuth(username):
     try:
         _ = session['username']
         connection = get_db_connection()
+
         if not connection:
             response = {
-                "database error": "Cannot Connect to Database"
+                "error": "Cannot Connect to Database"
             }
             return jsonify(response), 500
+        
         with connection.cursor() as cursor:
             query = '''
             select *
@@ -23,6 +38,7 @@ def ClientAuth(username):
             and roleID = 'Client'
             '''
             cursor.execute(query, (username))
+
             result = cursor.fetchone()
         connection.close()
         if result:
@@ -40,6 +56,27 @@ def ClientAuth(username):
         return jsonify({'error' : str(e)}), 500
 
 
+'''
+API to create new order
+
+Input:
+1. Username - text
+2. orderNotes - text
+3. order Date - text - YYYY-MM-DD
+4. itemID's - As Array
+5. Deliverd By username - Text
+6. Deliveriyu Date - text - YYYY-MM-DD
+7. Delivery Status - text
+
+Output:
+1. Ok Message - 200
+2. Session Error - 404
+3. Database Connection -500
+4. Server Error - 500
+5. Database Error - 500
+6. Item Not Found / Already Bought - 404
+7. Delivery Partner not found - 404
+'''
 @createOrder.route('/api/createorder', methods = ['POST'])
 def createOrder_function():
     try:
@@ -60,7 +97,7 @@ def createOrder_function():
             return jsonify(response), 500
         
         with connection.cursor() as cursor:
-
+            # QUery to Check of Delivery partner is a Volunteer or Staff
             query_check = '''
                 select *
                 from act
@@ -70,7 +107,10 @@ def createOrder_function():
             cursor.execute(query_check, (deliveredBy))
             result = cursor.fetchall()
             if not result:
-                return jsonify({'error': 'Delivery Partner not found'}), 200
+                return jsonify({'error': 'Delivery Partner not found'}), 404
+
+            # Query To Check if Item exists and not bough already -> found in itemIn Table
+            # Cannot apply trigger as we first create order which does not take itemID, hence can't check.
 
             query_check = '''
             select * 
@@ -84,7 +124,9 @@ def createOrder_function():
                 result = cursor.fetchone()
 
                 if not result:
-                    return jsonify({'message' : f'Item {item} Not Found or already bought'},200)
+                    return jsonify({'error' : f'Item {item} Not Found or already bought'},404)
+                
+            # Crate New Order in DB
             
             query = '''
             insert into ordered (orderDate, orderNotes, supervisor, client) values
@@ -93,8 +135,9 @@ def createOrder_function():
             cursor.execute(query, (orderDate, orderNotes, supervisor, username))
             connection.commit()
             
-            last_order_id = cursor.lastrowid
+            last_order_id = cursor.lastrowid # get Order ID
 
+            # insert item into itemIn with OrderID
             query = '''
             insert into itemin (ItemID, orderID, found) values
             (%s, %s, %s)
@@ -103,6 +146,7 @@ def createOrder_function():
                 cursor.execute(query, (int(item), last_order_id, True))
                 connection.commit()
 
+            # Insert Delivery Partiner Information
             query = '''
             insert into delivered (userName, orderID, status, date) values
             (%s, %s, %s, %s)

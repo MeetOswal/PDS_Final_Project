@@ -73,6 +73,7 @@ export function RegisterUser() {
 
         if (isValidPhone && isValidEmail) {
             const phoneNumbers = phoneFields.map((field) => field.value)
+            console.log(phoneNumbers);
             const formData = new FormData();
             formData.append("username" , sanitizeInput(userName));
             formData.append("password", passoword);
@@ -122,6 +123,7 @@ export function RegisterUser() {
 
     return (
         <div>
+            <Link to = "/">Home</Link>
             <form onSubmit={handleSubmit}>
             
             <div>
@@ -175,13 +177,42 @@ export function RegisterUser() {
             </div>
 
             <div>
-                <label htmlFor="role">Role</label>
-                <input 
-                type="text"
-                placeholder="Set Role"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                required/>
+                <div>
+                    <input 
+                    type="checkbox"
+                    onChange={(e) => setRole("Client")}
+                    checked = {role === "Client"}
+                    />
+                <label htmlFor="Clinet"> Clinet</label>
+                </div>
+
+                <div>
+                    <input 
+                    type="checkbox"
+                    onChange={(e) => setRole("Donator")}
+                    checked = {role === "Donator"}
+                    />
+                <label htmlFor="Clinet">Donator</label>
+                </div>
+
+                <div>
+                    <input 
+                    type="checkbox"
+                    onChange={(e) => setRole("Volunteer")}
+                    checked = {role === "Volunteer"}
+                    />
+                <label htmlFor="Clinet">Volunteer</label>
+                </div>
+
+                <div>
+                    <input 
+                    type="checkbox"
+                    onChange={(e) => setRole("Staff")}
+                    checked = {role === "Staff"}
+                    />
+                <label htmlFor="Staff">Staff</label>
+                </div>
+
             </div>
 
             

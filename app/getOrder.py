@@ -4,6 +4,24 @@ from pymysql import MySQLError as datababaseError
 from itertools import groupby
 getOrder = Blueprint('getorder', __name__)
 
+'''
+API to get Information for a perticular Order
+
+Input:
+Order ID as URL parameter
+
+Output:
+1. Order Infromation - 200
+    Order Detiails
+    Order Item Details
+    Item-Piece Location
+    
+2. Not Found Error -404
+3. Database Connection -500
+4. Server Error - 500
+5. Database Error - 500
+6. Session Error - 404
+'''
 @getOrder.route('/api/order/<int:order_id>', methods = ['GET'])
 def getOrder_function(order_id):
     try:
@@ -13,7 +31,6 @@ def getOrder_function(order_id):
             }
             return jsonify(response), 404
         
-        _ = session['username']
         connection = get_db_connection()
         if not connection:
             response = {
@@ -39,7 +56,12 @@ def getOrder_function(order_id):
                 'error': 'Order Not Found'
             }
             return jsonify(response), 404
-        else:
+        else: 
+            # Formating the Response
+            """
+            Remove Dupicate Order Details
+            Aggreate Item Information
+            """
             order_data = {
                 'client' : result[0]['client'],
                 'orderDate' : result[0]['orderDate'],

@@ -77,6 +77,8 @@ function App() {
           <Link to="/order-details">Order-Details</Link>
           <br />
           <Link to="/order-history">Your Order-History</Link>
+          <br />
+          <Link to = "/categories">Categories</Link>
           </>
         )
       }

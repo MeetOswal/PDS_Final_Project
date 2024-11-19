@@ -4,6 +4,22 @@ from pymysql import MySQLError as datababaseError
 from itertools import groupby
 getOrderHistory = Blueprint('orderHistory', __name__)
 
+'''
+API to get Information for user Order History
+
+Input:
+None
+
+Output:
+1. Orders Infromation / No History Message- 200
+    All Order Detials
+    Item In Order Details
+
+3. Database Connection -500
+4. Server Error - 500
+5. Database Error - 500
+6. Session Error - 404
+'''
 @getOrderHistory.route('/api/orderhistory', methods = ['GET'])
 def getOrderHistory_function():
     try:
@@ -34,8 +50,14 @@ def getOrderHistory_function():
         
         connection.close()
         if not result:
-            return jsonify({'message' : 'no order history found'}), 200
+            return jsonify({'message' : 'No Order History Found'}), 200
         else:
+            # Formating the Rsponse
+            '''
+            Remove duplicates cilent names
+            Group BY Order ID's
+            Aggregate Items in Orders.
+            '''
             order_data = {
                 'client' : username,
                 'orders' : []
