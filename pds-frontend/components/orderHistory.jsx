@@ -7,6 +7,7 @@ export function OrderHistory() {
   const [client, setClient] = useState(null);
   const [orders, setOrders] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
   const nav = useNavigate();
 
   useEffect(() => {
@@ -33,10 +34,17 @@ export function OrderHistory() {
             nav("/")
         }
             
+      }finally{
+        setLoading(false)
       }
     };
     orderHistory();
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
 
   return (
     <>

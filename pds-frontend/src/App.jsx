@@ -79,6 +79,10 @@ function App() {
           <Link to="/order-history">Your Order-History</Link>
           <br />
           <Link to = "/categories">Categories</Link>
+          <br />
+          <Link to = "/volunteer-task">Volunteer Tasks</Link>
+          <br />
+          <Link to = "/supervision-task">Supervision Tasks</Link>
           </>
         )
       }

@@ -21,15 +21,18 @@ Output:
 5. Server Error - 500
 6. Database Error - 500
 '''
-@addDonation.route('/api/check/supervisor', methods = ['GET'])
+@addDonation.route('/api/check/staff', methods = ['GET'])
 def SupervisorAuth():
     try:
+        if 'username' not in session:
+            return jsonify({'error': 'User not found'}), 404
+        
         username = session['username']
         connection = get_db_connection()
 
         if not connection:
             response = {
-                "database error": "Cannot Connect to Database"
+                "error": "Cannot Connect to Database"
             }
             return jsonify(response), 500
         
@@ -52,8 +55,7 @@ def SupervisorAuth():
         
     except datababaseError as e:
         return jsonify({'error': str(e)}), 500
-    except KeyError as e:
-        return jsonify({'error': 'User not found'}), 500
+    
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
 

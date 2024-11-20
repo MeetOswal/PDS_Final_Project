@@ -6,6 +6,7 @@ export function Category() {
     const [categories, setCategories] = useState([]);
     const [selectCategories, setSelectCategories] = useState({});
     const [error, setError] = useState(null)
+    const [loading, setLoading] = useState(true);
     const nav = useNavigate(); 
 
     useEffect(() => {
@@ -24,7 +25,9 @@ export function Category() {
                 else {
                     nav("/")
                 }
-            }
+            }finally {
+                setLoading(false);
+              }
         }
         getCategory();
     },[])
@@ -56,6 +59,11 @@ export function Category() {
     const handleSubmt = () => {
         nav("/filter", {state : selectCategories});
     }
+
+    if (loading) {
+        return <div>Loading...</div>
+      }
+    
 
     return (
         <>

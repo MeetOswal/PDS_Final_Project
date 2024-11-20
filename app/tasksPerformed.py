@@ -1,17 +1,18 @@
 from flask import Blueprint, jsonify, session
 from app.utils import get_db_connection
 from pymysql import MySQLError as datababaseError
-from itertools import groupby
 tasksPerformed = Blueprint('tasksPerformed', __name__)
 
 @tasksPerformed.route('/api/tasks/volunteer/<volunteer>', methods = ['GET'])
 def get_tasks_volunteer(volunteer):
     try:
-        username = session['username']
+        if 'username' not in session:
+            return jsonify({'error': 'User not found'}), 404
+
         connection = get_db_connection()
         if not connection:
             response = {
-                "database error": "Cannot Connect to Database"
+                "error": "Cannot Connect to Database"
             }
             return jsonify(response), 500
         
@@ -29,7 +30,7 @@ def get_tasks_volunteer(volunteer):
         connection.close()
 
         if not result:
-            return jsonify({"message" : "User does not exist"}), 200
+            return jsonify({"error" : "No Data Found"}), 404
         else:
             for i in result:
                 del i['userName']
@@ -39,21 +40,21 @@ def get_tasks_volunteer(volunteer):
     except datababaseError as e:
         return jsonify({'error': str(e)}), 500
     
-    except KeyError as e:
-        return jsonify({'error': 'User not found'}), 500
-    
     except Exception as e:
-        return jsonify({'error' : str(e)}), 500
+        return jsonify({'error' : "Somenthing Went Wrong"}), 500
 
 
-@tasksPerformed.route('/api/tasks/staff/<staff>', methods = ['GET'])
+@tasksPerformed.route('/api/tasks/supervision/<staff>', methods = ['GET'])
 def get_tasks_staff(staff):
     try:
-        username = session['username']
+        if 'username' not in session:
+            return jsonify({'error': 'User not found'}), 404
+        
         connection = get_db_connection()
+
         if not connection:
             response = {
-                "database error": "Cannot Connect to Database"
+                "error": "Cannot Connect to Database"
             }
             return jsonify(response), 500
         
@@ -70,18 +71,15 @@ def get_tasks_staff(staff):
         connection.close()
 
         if not result:
-            return jsonify({"message" : "User does not exist"}), 200
+            return jsonify({"error" : "Data Not Found"}), 404
         else:
-            for i in result:
-                del i['supervisor']
+            for data in result:
+                del data['supervisor']
                 
             return jsonify(result), 200
             
     except datababaseError as e:
         return jsonify({'error': str(e)}), 500
     
-    except KeyError as e:
-        return jsonify({'error': 'User not found'}), 500
-    
     except Exception as e:
-        return jsonify({'error' : str(e)}), 500
+        return jsonify({'error' : "Somenthing Went Wrong"}), 500

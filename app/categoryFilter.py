@@ -111,14 +111,14 @@ def categoryFilter():
             Sample:
 
             SELECT * 
-            FROM item
+            FROM item natural left join itemin
             WHERE (mainCategory = 'Clothing' AND subCategory IN ('Men'))
             OR (mainCategory = 'Books') 
 
             '''
             query = '''
             select *
-            from item
+            from item natural left join itemin
             '''
             if data: # in case not filter applied
                 query += 'where'
@@ -146,7 +146,7 @@ def categoryFilter():
                     # 1 Main Category Part Completed
                 
                 query = query[:-4]  # remove the last OR from the query
-                    
+                query += "order by ItemID"
             cursor.execute(query, tuple(queryParameters)) # Execute the query with prameterized query and its parmameters
             result = cursor.fetchall()
         
