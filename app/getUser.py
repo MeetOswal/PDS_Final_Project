@@ -48,14 +48,12 @@ def get_profile():
         response = {
             "username" : result[0]["userName"],
             "fname" : result[0]['fname'],
-            "laname" : result[0]['lname'],
+            "lname" : result[0]['lname'],
             "email" : result[0]['email'],
             "phone" : []
         }
         for idx, i in enumerate(result):
-            response['phone'].append({
-                idx : i['phone']
-            })
+            response['phone'].append(i['phone'])
             
         return jsonify(response), 200
     

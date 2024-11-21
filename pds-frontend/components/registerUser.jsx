@@ -73,7 +73,6 @@ export function RegisterUser() {
 
         if (isValidPhone && isValidEmail) {
             const phoneNumbers = phoneFields.map((field) => field.value)
-            console.log(phoneNumbers);
             const formData = new FormData();
             formData.append("username" , sanitizeInput(userName));
             formData.append("password", passoword);

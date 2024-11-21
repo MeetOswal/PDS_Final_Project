@@ -25,7 +25,7 @@ Output:
 def SupervisorAuth():
     try:
         if 'username' not in session:
-            return jsonify({'error': 'User not found'}), 404
+            return jsonify({'error': 'Cannot Access This Page'}), 404
         
         username = session['username']
         connection = get_db_connection()
@@ -77,11 +77,13 @@ Output:
 @addDonation.route('/api/check/donator/<username>', methods = ['GET'])
 def donatorAuth(username):
     try:
-        supervisorname = session['username']
+        if 'username' not in session:
+            return jsonify({'error': 'Cannot Access This Page'}), 404
+
         connection = get_db_connection()
         if not connection:
             response = {
-                "database error": "Cannot Connect to Database"
+                "error": "Cannot Connect to Database"
             }
             return jsonify(response), 500
         with connection.cursor() as cursor:
@@ -97,13 +99,10 @@ def donatorAuth(username):
         if result:
             return jsonify({'message' : 'OK'}), 200
         else:
-            return jsonify({'error': 'Donator not found'}), 401
+            return jsonify({'error': 'Donator not found'}), 404
         
     except datababaseError as e:
         return jsonify({'error': str(e)}), 500
-    
-    except KeyError as e:
-        return jsonify({'error': 'User not found'}), 500
     
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
@@ -133,7 +132,8 @@ Output:
 @addDonation.route('/api/donate/', methods = ['POST'])
 def addDonation_function():
     try:
-        supervisorname = session['username']
+        if 'username' not in session:
+            return jsonify({'error': 'Cannot Access This Page'}), 404
 
         donor = request.form.get('donor')
 
@@ -186,16 +186,15 @@ def addDonation_function():
             (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             '''
             for piece in pieces:
-                cursor.execute(query3, (last_item_id, int(piece['pieceNum']), piece['pDescription'], int(piece['length']), int(piece['width']), int(piece['height']), int(piece['roomNum']), int(piece['shelfNum']), piece['pNotes']))
+                cursor.execute(query3, (last_item_id, int(piece['pieceNum']), piece['pDescription'], int(piece['Length']), int(piece['width']), int(piece['height']), int(piece['roomNum']), int(piece['shelfNum']), piece['pNotes']))
                 connection.commit()
 
         connection.close()
 
-        return jsonify({'message' : 'item donated'}) ,200
+        return jsonify({'message' : 'Item Donated'}) ,200
     
     except datababaseError as e:
-        return jsonify({' Database error' : str(e)}), 500
-    except KeyError as e:
-        return jsonify({'error' : 'User not Found'}), 404
+        return jsonify({'error' : str(e)}), 500
+ 
     except Exception as e:
-        return jsonify({'Server error' : str(e)}), 500
+        return jsonify({'error' : str(e)}), 500

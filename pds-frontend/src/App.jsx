@@ -72,6 +72,8 @@ function App() {
       {
         loggedIn && (
           <>
+          <Link to = "/profile">My Profile</Link>
+          <br />
           <Link to="/get-item">Get Item</Link>
           <br />
           <Link to="/order-details">Order-Details</Link>
@@ -83,7 +85,10 @@ function App() {
           <Link to = "/volunteer-task">Volunteer Tasks</Link>
           <br />
           <Link to = "/supervision-task">Supervision Tasks</Link>
+          <br />
+          <Link to = "/donate">New Donation</Link>
           </>
+          
         )
       }
 

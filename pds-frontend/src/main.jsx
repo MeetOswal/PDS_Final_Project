@@ -11,6 +11,8 @@ import { Category } from "../components/Categories.jsx";
 import { Filter } from "../components/Filters.jsx";
 import { VolunteerTasks } from "../components/VolunteerTasks.jsx";
 import { SupervisionTasks } from "../components/SupervisionTasks.jsx";
+import { UserPorfile } from "../components/UserProfile.jsx";
+import { Donate } from "../components/Donate.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -52,6 +54,14 @@ const router = createBrowserRouter([
     path: "/supervision-task",
     element: <SupervisionTasks />,
   },
+  {
+    path : "/profile",
+    element : <UserPorfile />
+  },
+  {
+    path : "/donate",
+    element : <Donate/>
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(
