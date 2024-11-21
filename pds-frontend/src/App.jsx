@@ -87,6 +87,8 @@ function App() {
           <Link to = "/supervision-task">Supervision Tasks</Link>
           <br />
           <Link to = "/donate">New Donation</Link>
+          <br />
+          <Link to = "/order">New Order</Link>
           </>
           
         )

@@ -13,6 +13,7 @@ import { VolunteerTasks } from "../components/VolunteerTasks.jsx";
 import { SupervisionTasks } from "../components/SupervisionTasks.jsx";
 import { UserPorfile } from "../components/UserProfile.jsx";
 import { Donate } from "../components/Donate.jsx";
+import { Orders } from "../components/Order.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -61,6 +62,9 @@ const router = createBrowserRouter([
   {
     path : "/donate",
     element : <Donate/>
+  },{
+    path : "/order",
+    element: <Orders/>
   }
 ]);
 

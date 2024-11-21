@@ -21,7 +21,9 @@ Output:
 @createOrder.route('/api/check/client/<username>', methods = ['GET'])
 def ClientAuth(username):
     try:
-        _ = session['username']
+        if 'username' not in session:
+            return jsonify({'error': 'Cannot Access This Page'}), 404
+        
         connection = get_db_connection()
 
         if not connection:
@@ -44,7 +46,7 @@ def ClientAuth(username):
         if result:
             return jsonify({'message' : 'OK'}), 200
         else:
-            return jsonify({'error': 'Client not found'}), 401
+            return jsonify({'error': 'Client not found'}), 404
         
     except datababaseError as e:
         return jsonify({'error': str(e)}), 500
@@ -80,6 +82,9 @@ Output:
 @createOrder.route('/api/createorder', methods = ['POST'])
 def createOrder_function():
     try:
+        if 'username' not in session:
+            return jsonify({'error': 'Cannot Access This Page'}), 404
+        
         supervisor = session['username']
         username = request.form.get('username')
         orderNotes = request.form.get('orderNotes')
@@ -155,15 +160,11 @@ def createOrder_function():
             connection.commit()
 
         connection.close()
-        return jsonify({'message' : 'order created'}) ,200  
+        return jsonify({'message' : 'Order Created'}) ,200  
 
     except datababaseError as e:
         print(e)
         return jsonify({'error': str(e)}), 500
-    
-    except KeyError as e:
-        print(e)
-        return jsonify({'error': 'User not found'}), 500
     
     except Exception as e:
         print(e)

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { unescapeHTML } from "./utils";
+import { sanitizeInput } from "./utils";
 
 export function Donate() {
   const [itemData, setItemData] = useState({
@@ -15,7 +15,7 @@ export function Donate() {
   });
   const empty = [
     {
-      donor: itemData.donor,
+      donor: "",
       iDescription: "",
       color: "",
       isNew: null,
@@ -88,7 +88,7 @@ export function Donate() {
     if (itemData.donor.length > 0) {
       try {
         await axios.get(
-          `http://127.0.0.1:5000/api/check/donator/${unescapeHTML(
+          `http://127.0.0.1:5000/api/check/donator/${sanitizeInput(
             itemData.donor
           )}`,
           {
@@ -224,12 +224,12 @@ export function Donate() {
       const currentDate = new Date();
       const formattedDate = currentDate.toISOString().split("T")[0];
       const formData = new FormData();
-      formData.append("donor", unescapeHTML(itemData.donor));
-      formData.append("iDescription", unescapeHTML(itemData.iDescription));
-      formData.append("color", unescapeHTML(itemData.color));
+      formData.append("donor", sanitizeInput(itemData.donor));
+      formData.append("iDescription", sanitizeInput(itemData.iDescription));
+      formData.append("color", sanitizeInput(itemData.color));
       formData.append("isNew", itemData.isNew);
       formData.append("hasPieces", itemData.hasPieces);
-      formData.append("material", unescapeHTML(itemData.material));
+      formData.append("material", sanitizeInput(itemData.material));
       formData.append("mainCategory", mainCategory.selected);
       formData.append("subCategory", subCategory.selected);
       formData.append("donateDate", formattedDate);
@@ -251,8 +251,8 @@ export function Donate() {
         setItemData(empty[0]);
         setMainCategory((currentState) => ({...currentState, selected : ""}))
         setSubCategory((currentState) => ({...currentState, selected : ""}))
-        setImagePreview(null);
         setPieceFields(empty[1]);
+        setIsDonor(false);
       } catch (error) {
         console.log(error);
         if (error.response) {

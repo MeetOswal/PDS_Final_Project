@@ -17,8 +17,9 @@ export function RegisterUser() {
     const [phoneFields, setPhoneFields] = useState([{id : 1, value : ""}]);
     const [result, setResult] = useState(null)
     const nav = useNavigate();
+
     function sanitizeInput(input) {
-        return validator.escape(input); // This escapes special HTML characters like <, >, & etc.
+        return validator.escape(input); 
     }
 
     const isPhoneNumber = (value) => {
