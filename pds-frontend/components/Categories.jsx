@@ -107,6 +107,11 @@ export function Category() {
             </button>
             </>
         )}
+        {error && (
+            <div>
+                {error}
+            </div>
+        )}
         </>
         
     )

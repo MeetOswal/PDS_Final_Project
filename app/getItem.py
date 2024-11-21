@@ -65,6 +65,10 @@ def getItem_function(item_id):
                 'iDescription' : result[0]['iDescription'],
                 'photo' : base64.b64encode(result[0]['photo']).decode('utf-8'),
                 'Category' : result[0]['mainCategory'],
+                'color' : result[0]['color'],
+                'isNew' : result[0]['isNew'],
+                'hasPieces' : result[0]['hasPieces'],
+                'material' : result[0]['material'],
                 'pieces' : []
             }
             for i in result:
