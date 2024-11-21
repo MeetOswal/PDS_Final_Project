@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import validator from "validator";
+import { unescapeHTML } from "./utils";
 
 export function SupervisionTasks() {
   const [staffName, setStaffName] = useState("");
@@ -94,13 +95,13 @@ export function SupervisionTasks() {
 
           {data && (
             <div>
-              {data.map((task, index) => {
+              {data.map((task) => {
                 return (
                   <div key={task.orderID}>
                     <div>Order ID: {task.orderID}</div>
-                    <div>Client : {task.client}</div>
+                    <div>Client : {unescapeHTML(task.client)}</div>
                     <div>Date : {task.orderDate}</div>
-                    <div>Notes : {task.orderNotes}</div>
+                    <div>Notes : {unescapeHTML(task.orderNotes)}</div>
                     <br />
                   </div>
                 );

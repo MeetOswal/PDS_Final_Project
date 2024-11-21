@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-
+import { unescapeHTML } from "./utils";
 export function OrderHistory() {
   const [client, setClient] = useState(null);
   const [orders, setOrders] = useState([]);
@@ -65,7 +65,7 @@ export function OrderHistory() {
                   return (
                     <div key={item.ItemID}>
                       <div>ItemID : {item.ItemID}</div>
-                      <div>Item Description : {item.iDescription}</div>
+                      <div>Item Description : {unescapeHTML(item.iDescription)}</div>
                       <br />
                     </div>
                   );

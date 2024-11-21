@@ -80,7 +80,7 @@ export function RegisterUser() {
             formData.append("fname", sanitizeInput(fname));
             formData.append('lname', sanitizeInput(lname));
             formData.append('email', sanitizeInput(email));
-            formData.append('role', sanitizeInput(role));
+            formData.append('role', role);
             formData.append('phone', phoneNumbers);
 
             try {

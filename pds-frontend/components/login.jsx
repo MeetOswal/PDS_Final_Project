@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
+import { sanitizeInput } from "./utils";
 export function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -17,7 +17,7 @@ export function Login() {
     setLoading(true);
 
     const formData = new FormData();
-    formData.append("username", username);
+    formData.append("username", sanitizeInput(username));
     formData.append("password", password);
 
     try {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
+import { unescapeHTML } from "./utils";
 export function Filter() {
   const { state } = useLocation();
   const [fetchResponse, setFetchResponse] = useState(null);
@@ -68,12 +68,13 @@ export function Filter() {
             item.found !== 1 && (
               <div key={item.ItemID}>
                 <div>Item ID: {item.ItemID}</div>
-                <div>Color : {item.color}</div>
+                <div>Item Description : {unescapeHTML(item.iDescription)}</div>
+                <div>Color : {unescapeHTML(item.color)}</div>
                 <div>
                   Has Pieces: {Boolean(item.hasPeces) ? "True" : "False"}
                 </div>
                 <div>Is New: {Boolean(item.isNew) ? "True" : "False"}</div>
-                <div>Material : {item.material}</div>
+                <div>Material : {unescapeHTML(item.material)}</div>
                 <div>Category: {item.mainCategory}</div>
                 <div>Sub Category : {item.subCategory}</div>
 
@@ -84,10 +85,11 @@ export function Filter() {
             <div key={item.ItemID}>
               {item.found == 1 && <div>Bought</div>}
               <div>Item ID: {item.ItemID}</div>
-              <div>Color : {item.color}</div>
+              <div>Item Description : {unescapeHTML(item.iDescription)}</div>
+              <div>Color : {unescapeHTML(item.color)}</div>
               <div>Has Pieces: {Boolean(item.hasPeces) ? "True" : "False"}</div>
               <div>Is New: {Boolean(item.isNew) ? "True" : "False"}</div>
-              <div>Material : {item.material}</div>
+              <div>Material : {unescapeHTML(item.material)}</div>
               <div>Category: {item.mainCategory}</div>
               <div>Sub Category : {item.subCategory}</div>
 

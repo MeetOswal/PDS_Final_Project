@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-
+import { unescapeHTML } from "./utils";
 export function GetOrder() {
   const [orderID, setorderID] = useState("");
   const [loading, setLoading] = useState(false);
@@ -68,7 +68,7 @@ export function GetOrder() {
       {orderClient && orderDate && (
         <div>
           <div>Order ID : {orderID}</div>
-          <div>Client : {orderClient}</div>
+          <div>Client : {unescapeHTML(orderClient)}</div>
           <div>Order Date : {orderDate}</div>
           <br />
           <div>Items:</div>
@@ -76,13 +76,13 @@ export function GetOrder() {
             return (
               <div key={item.ItemID}>
                 <div>Item ID : {item.ItemID}</div>
-                <div>Item Description: {item.iDescription}</div>
+                <div>Item Description: {unescapeHTML(item.iDescription)}</div>
                 <br />
                 {item.piece.map((pie) => {
                   return (
                     <div key={pie.pieceNum}>
                       <div>Piece Number: {pie.pieceNum}</div>
-                      <div>Piece Description: {pie.pDescription}</div>
+                      <div>Piece Description: {unescapeHTML(pie.pDescription)}</div>
                       <div>Piece Location:</div>
                       <div>Room Number: {pie.roomNum}</div>
                       <div>Shelf Number: {pie.shelfNum}</div>
