@@ -14,6 +14,7 @@ import { SupervisionTasks } from "../components/SupervisionTasks.jsx";
 import { UserPorfile } from "../components/UserProfile.jsx";
 import { Donate } from "../components/Donate.jsx";
 import { Orders } from "../components/Order.jsx";
+import NotFound from "../components/NotFound.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
   },{
     path : "/order",
     element: <Orders/>
+  },
+  {
+    path : "/*",
+    element : <NotFound/>
   }
 ]);
 
