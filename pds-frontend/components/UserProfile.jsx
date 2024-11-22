@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { unescapeHTML } from "./utils";
+import { Link } from "react-router-dom";
 export function UserPorfile() {
   const [userName, setUserName] = useState("");
   const [fname, setFname] = useState(null);
@@ -128,6 +129,7 @@ export function UserPorfile() {
 
   return (
     <>
+    <Link to = "/">Home</Link>
       <div>Your Profile</div>
       <div>username: {unescapeHTML(userName)}</div>
       <div>

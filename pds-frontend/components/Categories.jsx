@@ -57,7 +57,8 @@ export function Category() {
     };
 
     const handleSubmt = () => {
-        nav("/filter", {state : selectCategories});
+            nav("/filter", {state : selectCategories});
+        
     }
 
     if (loading) {
