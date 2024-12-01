@@ -33,7 +33,7 @@ def getCategory():
         connection = get_db_connection()
         if not connection:
             response = {
-                "database error": "Cannot Connect to Database"
+                "error": "Cannot Connect to Database"
             }
             return jsonify(response), 500
         
@@ -81,8 +81,8 @@ Output:
 '''    
     
 
-@CategoryFilter.route('/api/category', methods = ['POST'])
-def categoryFilter():
+@CategoryFilter.route('/api/category/<int:page>', methods = ['POST'])
+def categoryFilter(page):
     try:
         if 'username' not in session:
             response = {
@@ -90,7 +90,6 @@ def categoryFilter():
             }
             return jsonify(response), 404
         
-
         data = request.form.get('data')
         # Convert Json to Dict.
         data = json.loads(data)
@@ -110,15 +109,22 @@ def categoryFilter():
             '''
             Sample:
 
-            SELECT * 
-            FROM item natural left join itemin
+            with itemPage as(
+                SELECT * 
+            FROM item
             WHERE (mainCategory = 'Clothing' AND subCategory IN ('Men'))
-            OR (mainCategory = 'Books') 
+            OR (mainCategory = 'Books')
+            ORDER BY ItemID DESC
+            LIMIT 10 OFFSET 0
+            )
+            select * 
+            from itemPage natural left join itemin 
 
             '''
             query = '''
+            with itemPage as(
             select *
-            from item natural left join itemin
+            from item 
             '''
             if data: # in case not filter applied
                 query += 'where'
@@ -146,7 +152,15 @@ def categoryFilter():
                     # 1 Main Category Part Completed
                 
                 query = query[:-4]  # remove the last OR from the query
-                query += "order by ItemID"
+            query += """
+            order by ItemID desc 
+            limit %s offset %s)
+            select * 
+            from itemPage natural left join itemin
+            """
+            queryParameters.append(11)
+            queryParameters.append((page - 1) * 10)
+            print(query)
             cursor.execute(query, tuple(queryParameters)) # Execute the query with prameterized query and its parmameters
             result = cursor.fetchall()
         
@@ -154,14 +168,27 @@ def categoryFilter():
 
         if not result:
             return jsonify({"error" : "No Item Found"}), 404
+        
+        response = {
+            'next' : 0,
+            'prev' : 0,
+            'result' : []
+        }
+
+        if len(result) == 11:
+            result.pop()
+            response['next'] = 1
+        if page != 1:
+            response['prev'] = 1
 
         for item in result: # enocede photo to a base 64 as we cannot send binary image string as json.
             item['photo'] = base64.b64encode(item['photo']).decode('utf-8') 
-            
-        return jsonify(result), 200
+        
+        response['result'] = result    
+        return jsonify(response), 200
     
     except datababaseError as e:
-        return jsonify({'error' : str(e)}), 500
+        return jsonify({'error' : query}), 500
     
     except Exception as e:
         return jsonify({'error' : str(e)}), 500

@@ -8,13 +8,16 @@ export function Filter() {
   const [error, setError] = useState(null);
   const [removeBought, setRemoveBought] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [next, setNext] = useState(false);
+  const [prev, setPrev] = useState(false);
+  const [page, setPage] = useState(1)
   const nav = useNavigate();
 
   useEffect(() => {
     const fetchItems = async (formData) => {
       try {
         const response = await axios.post(
-          `http://127.0.0.1:5000/api/category`,
+          `http://127.0.0.1:5000/api/category/${page}`,
           formData,
           {
             headers: {
@@ -24,7 +27,10 @@ export function Filter() {
           }
         );
 
-        setFetchResponse(response.data);
+        setFetchResponse(response.data.result);
+        response.data.next === 1 ? setNext(true) : setNext(false)
+        response.data.prev === 1 ? setPrev(true) : setPrev(false)
+
       } catch (error) {
         if (error.response) {
           setError(error.response.data.error);
@@ -45,7 +51,7 @@ export function Filter() {
       formData.append("data", JSON.stringify({}));
       fetchItems(formData);
     }
-  }, [state]);
+  }, [state, page]);
 
   if (loading) {
     return <div>Loading...</div>
@@ -71,8 +77,8 @@ export function Filter() {
             item.found !== 1 && (
               <div key={item.ItemID}>
                 <div>Item Description : {unescapeHTML(item.iDescription)}</div>
-                <div><a onClick={() => nav("/get-item", {state :item.ItemID})}>Get More Info..</a></div>
                 <div> <img src={`data:image/jpeg;base64,${item.photo}`} /></div> 
+                <div><a onClick={() => nav("/get-item", {state :item.ItemID})}>Get More Info..</a></div>
                 <br />
               </div>
             )
@@ -80,12 +86,18 @@ export function Filter() {
             <div key={item.ItemID}>
               {item.found == 1 && <div>Bought</div>}
               <div>Item Description : {unescapeHTML(item.iDescription)}</div>
-              <div><a onClick={() => nav("/get-item", {state :item.ItemID})}>Get More Info..</a></div>
               <div><img src={`data:image/jpeg;base64,${item.photo}`} /></div>
-              
+              <div><a onClick={() => nav("/get-item", {state :item.ItemID})}>Get More Info..</a></div>
               <br />
             </div>
           )
+        )}
+        { prev && (
+          <button onClick={() => setPage(currentPage => currentPage - 1)}>Prev</button>
+          )
+        }
+        {next && (
+          <button onClick={() => setPage(currentPage => currentPage + 1)}>Next</button>
         )}
     </div>
   );
