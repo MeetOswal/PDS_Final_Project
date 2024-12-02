@@ -242,7 +242,7 @@ export function Orders() {
                   deliveryDate: date,
                 }))
               }
-              minDate={new Date()}
+              minDate={orderData.orderDate}
               required
             />
             <br />

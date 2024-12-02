@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { unescapeHTML } from "./utils";
 
 export function GetItem() {
-  const [itemID, setItemID] = useState("");
+  const [itemID, setItemID] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const [itemData, setItemData] = useState({
@@ -18,8 +18,10 @@ export function GetItem() {
   });
   const [itemPieces, setItemPieces] = useState([]);
   const [itemIamge, setItemImage] = useState(null);
+
   const { state } = useLocation();
   const nav = useNavigate();
+
   const checkItemID = (itemID) => {
     const itemRegex = /^\d+$/;
     return itemRegex.test(itemID);
@@ -81,10 +83,12 @@ export function GetItem() {
   }, [state]);
 
   useEffect(() => {
-    const handleClickAsync = async () => {
-      await handleClick();
-    };
-    handleClickAsync();
+    if(state) {
+      const handleClickAsync = async () => {
+        await handleClick();
+      };
+      handleClickAsync();
+    }
   }, [itemID]);
 
   return (
