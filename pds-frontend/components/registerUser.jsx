@@ -9,7 +9,12 @@ export function RegisterUser() {
   const [fname, setFname] = useState("");
   const [lname, setLaname] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState({
+    Client : false,
+    Donator : false,
+    Staff : false,
+    Volunteer : false,
+  });
   const [loading, setLoading] = useState(false);
   const [Error, setError] = useState("");
   const [phoneFields, setPhoneFields] = useState([{ id: 1, value: "" }]);
@@ -62,6 +67,15 @@ export function RegisterUser() {
     }
   };
 
+  const validateRoles = (roles) => {
+    if (roles.length < 1) {
+      setError('No Role Selected')
+      return false;
+    }else {
+      return true;
+    }
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -69,8 +83,15 @@ export function RegisterUser() {
 
     const isValidPhone = validatePhoneNumbers();
     const isValidEmail = validateEmail();
+    let roles = []
+    role.Client ? roles.push("Client") : null;
+    role.Donator ? roles.push("Donator"): null;
+    role.Volunteer ? roles.push("Volunteer") : null;
+    role.Staff ? roles.push("Staff") : null;
 
-    if (isValidPhone && isValidEmail) {
+    const checkRoles = validateRoles(roles);
+    if (isValidPhone && isValidEmail && checkRoles) {
+      
       const phoneNumbers = phoneFields.map((field) => field.value);
       const formData = new FormData();
       formData.append("username", sanitizeInput(userName));
@@ -78,7 +99,7 @@ export function RegisterUser() {
       formData.append("fname", sanitizeInput(fname));
       formData.append("lname", sanitizeInput(lname));
       formData.append("email", sanitizeInput(email));
-      formData.append("role", role);
+      formData.append("role", roles);
       formData.append("phone", phoneNumbers);
 
       try {
@@ -98,6 +119,8 @@ export function RegisterUser() {
       } finally {
         setLoading(false);
       }
+    }else{
+      setLoading(false);
     }
   };
 
@@ -121,7 +144,7 @@ export function RegisterUser() {
   return (
     <div>
       <Link to="/">Home</Link>
-      {result == "User Registered Successfully" && (
+      {result !== "User Registered Successfully" && (
         <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor="username">Username</label>
@@ -182,8 +205,8 @@ export function RegisterUser() {
             <div>
               <input
                 type="checkbox"
-                onChange={(e) => setRole("Client")}
-                checked={role === "Client"}
+                onChange={(e) => setRole(currentstate => ({...currentstate, Client : !role.Client}))}
+                checked={role.Client}
               />
               <label htmlFor="Clinet"> Clinet</label>
             </div>
@@ -191,8 +214,8 @@ export function RegisterUser() {
             <div>
               <input
                 type="checkbox"
-                onChange={(e) => setRole("Donator")}
-                checked={role === "Donator"}
+                onChange={(e) => setRole(currentstate => ({...currentstate, Donator : !role.Donator}))}
+                checked={role.Donator}
               />
               <label htmlFor="Clinet">Donator</label>
             </div>
@@ -200,8 +223,8 @@ export function RegisterUser() {
             <div>
               <input
                 type="checkbox"
-                onChange={(e) => setRole("Volunteer")}
-                checked={role === "Volunteer"}
+                onChange={(e) => setRole(currentstate => ({...currentstate, Volunteer : !role.Volunteer}))}
+                checked={role.Volunteer}
               />
               <label htmlFor="Clinet">Volunteer</label>
             </div>
@@ -209,8 +232,8 @@ export function RegisterUser() {
             <div>
               <input
                 type="checkbox"
-                onChange={(e) => setRole("Staff")}
-                checked={role === "Staff"}
+                onChange={(e) => setRole(currentstate => ({...currentstate, Staff : !role.Staff}))}
+                checked={role.Staff}
               />
               <label htmlFor="Staff">Staff</label>
             </div>

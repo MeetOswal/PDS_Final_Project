@@ -13,10 +13,9 @@ def registerUser():
         fname = request.form.get('fname')
         lname = request.form.get('lname')
         email = request.form.get('email')
-        role = request.form.get('role')
-        if request.form.get('phone'):
-            phone = request.form.get('phone').split(",")
-        
+        role = request.form.get('role').split(",")
+        phone = request.form.get('phone').split(",")
+      
         # not null checked in frontend
 
         salt = bcrypt .gensalt()
@@ -35,13 +34,12 @@ def registerUser():
             from personphone
             where phone = %s
             '''
-            if phone:
-                for i in phone:
-                    cursor.execute(check_query, (i))
-                    result = cursor.fetchone()
-                    if result:
-                        connection.close()
-                        return jsonify({"error" : "Phone Number already exists"}), 409
+            for i in phone:
+                cursor.execute(check_query, (i))
+                result = cursor.fetchone()
+                if result:
+                    connection.close()
+                    return jsonify({"error" : "Phone Number already exists"}), 409
             
             query = '''
             insert into person (userName, password, fname, lname, email) values
@@ -57,11 +55,12 @@ def registerUser():
             (%s, %s)
             '''
             cursor.execute(query, (username, hash_password, fname, lname, email))
-            cursor.execute(query2, (username, role))
 
-            if phone:
-                for i in phone:
-                    cursor.execute(query3, (username, i))
+            for i in role:
+                cursor.execute(query2, (username, i))
+
+            for i in phone:
+                cursor.execute(query3, (username, i))
 
             connection.commit()
             connection.close()
