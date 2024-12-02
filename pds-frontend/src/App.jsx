@@ -9,7 +9,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
   const [error, setError] = useState(false);
-
+  const [permission, setPermission] = useState(false);
   const getUser = async () => {
     try {
       const response = await axios.get("http://127.0.0.1:5000/api/profile", {
@@ -24,6 +24,19 @@ function App() {
           setError("Server Not Found");
           return {"error": ""}
         }
+    }
+  };
+
+  const checkStaff = async () => {
+    try {
+      await axios.get(`http://127.0.0.1:5000/api/check/staff`, {
+        withCredentials: true,
+      });
+      setPermission(true);
+    } catch (error) {
+      if (error.response) {
+        setPermission(false);
+      }
     }
   };
 
@@ -42,6 +55,7 @@ function App() {
       } else {
         setUserData(result.fname);
         setLoggedIn(true);
+        await checkStaff();
       }
       setLoading(false);
     };
@@ -82,13 +96,30 @@ function App() {
           <br />
           <Link to = "/categories">Categories</Link>
           <br />
-          <Link to = "/volunteer-task">Volunteer Tasks</Link>
+          {
+            permission && (
+              <Link to = "/volunteer-task">Volunteer Tasks</Link>
+            )
+          }
           <br />
-          <Link to = "/supervision-task">Supervision Tasks</Link>
+          {
+            permission && (
+              <Link to = "/supervision-task">Supervision Tasks</Link>
+            )
+          }
           <br />
-          <Link to = "/donate">New Donation</Link>
+          {
+            permission && (
+              <Link to = "/donate">New Donation</Link>
+            )
+          }
           <br />
-          <Link to = "/order">New Order</Link>
+          {
+            permission && (
+              <Link to = "/order">New Order</Link>
+            )
+          }
+          
           </>
           
         )
