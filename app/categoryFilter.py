@@ -109,25 +109,22 @@ def categoryFilter(page):
             '''
             Sample:
 
-            with itemPage as(
-                SELECT * 
-            FROM item
-            WHERE (mainCategory = 'Clothing' AND subCategory IN ('Men'))
-            OR (mainCategory = 'Books')
-            ORDER BY ItemID DESC
-            LIMIT 10 OFFSET 0
-            )
-            select * 
-            from itemPage natural left join itemin 
+            select *
+            from item natural left join itemin
+            where orderID is null and 
+            (( mainCategory = 'Books' and subCategory in ( 'Comedy' )) or 
+            ( mainCategory = 'Clothing' and subCategory in ('Men')))
+            order by ItemID desc
+            limit 11 offset 10 
 
             '''
             query = '''
-            with itemPage as(
-            select *
-            from item 
+            select * 
+            from item natural left join itemin
+            where orderID is null
             '''
             if data: # in case not filter applied
-                query += 'where'
+                query += 'and ('
 
                 for category,sub_category in data.items():
                     query += "( mainCategory = %s"
@@ -139,7 +136,7 @@ def categoryFilter(page):
                     """
 
                     if len(sub_category) > 0: # in case no subCategory choosen
-                        query += "and subCategory in ( %s "
+                        query += " and subCategory in ( %s "
                         queryParameters.append(sub_category[0])
 
                         for idx in range(1, len(sub_category)):
@@ -152,15 +149,14 @@ def categoryFilter(page):
                     # 1 Main Category Part Completed
                 
                 query = query[:-4]  # remove the last OR from the query
+                query += ")"
             query += """
             order by ItemID desc 
-            limit %s offset %s)
-            select * 
-            from itemPage natural left join itemin
+            limit %s offset %s
             """
             queryParameters.append(11)
             queryParameters.append((page - 1) * 10)
-            print(query)
+            
             cursor.execute(query, tuple(queryParameters)) # Execute the query with prameterized query and its parmameters
             result = cursor.fetchall()
         

@@ -6,7 +6,6 @@ export function Filter() {
   const { state } = useLocation();
   const [fetchResponse, setFetchResponse] = useState(null);
   const [error, setError] = useState(null);
-  const [removeBought, setRemoveBought] = useState(false);
   const [loading, setLoading] = useState(true);
   const [next, setNext] = useState(false);
   const [prev, setPrev] = useState(false);
@@ -66,25 +65,10 @@ export function Filter() {
       <h3>Items</h3>
       
       {error && <div>{error}</div>}
-      {fetchResponse && (
-        <button onClick={() => setRemoveBought((currentState) => !currentState)}>
-        Remove Bought Items
-      </button>
-      )}
       {fetchResponse &&
         fetchResponse.map((item) =>
-          removeBought ? (
-            item.found !== 1 && (
-              <div key={item.ItemID}>
-                <div>Item Description : {unescapeHTML(item.iDescription)}</div>
-                <div> <img src={`data:image/jpeg;base64,${item.photo}`} /></div> 
-                <div><a onClick={() => nav("/get-item", {state :item.ItemID})}>Get More Info..</a></div>
-                <br />
-              </div>
-            )
-          ) : (
+          (
             <div key={item.ItemID}>
-              {item.found == 1 && <div>Bought</div>}
               <div>Item Description : {unescapeHTML(item.iDescription)}</div>
               <div><img src={`data:image/jpeg;base64,${item.photo}`} /></div>
               <div><a onClick={() => nav("/get-item", {state :item.ItemID})}>Get More Info..</a></div>

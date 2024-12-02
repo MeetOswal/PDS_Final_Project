@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { unescapeHTML } from "./utils";
 
 export function GetItem() {
-  const [itemID, setItemID] = useState();
+  const [itemID, setItemID] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const [itemData, setItemData] = useState({
