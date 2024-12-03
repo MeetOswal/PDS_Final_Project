@@ -40,8 +40,7 @@ def getOrder_function(order_id):
         
         with connection.cursor() as cursor:
             query = '''
-            select ItemID, iDescription, mainCategory, 
-            pieceNum, pDescription, roomNum, shelfNum, orderDate, client, userName, supervisor, date
+            select *
             from (`ordered` natural join delivered) natural join
             (itemin natural join item) natural join
             piece
@@ -68,6 +67,7 @@ def getOrder_function(order_id):
                 'delivery_partner' : result[0]['userName'],
                 'supervisor' : result[0]['supervisor'],
                 'delivery_date' : result[0]['date'],
+                'status' : result[0]['status'],
                 'item' : []
             }
             for key, group in groupby(result, key = lambda x:(x['ItemID'], x['iDescription'])):

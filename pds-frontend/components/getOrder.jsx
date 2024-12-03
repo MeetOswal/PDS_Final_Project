@@ -4,6 +4,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { unescapeHTML } from "./utils";
 
 export function GetOrder() {
+  const [updatePermission, setUpdatePermission] = useState(false);
+  const [doUpdate, setDoUpdate] = useState(false);
   const [orderID, setorderID] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
@@ -12,11 +14,13 @@ export function GetOrder() {
   const [orderItems, setOrderItems] = useState([]);
   const [orderDelivery, setOrderDelivery] = useState({
     deliverdBy: "",
-    date : ""
+    date: "",
+    status: "",
   });
+
   const { state } = useLocation();
   const nav = useNavigate();
-  const [suerpvisor,setSupervisor] = useState(null);
+  const [suerpvisor, setSupervisor] = useState(null);
 
   const checkOrderID = (itemID) => {
     const itemRegex = /^\d+$/;
@@ -25,11 +29,12 @@ export function GetOrder() {
 
   const handleClick = async () => {
     let isvalid = checkOrderID(orderID);
-    setSupervisor(null);
     setOrderDelivery({
       deliverdBy: "",
-      date : ""
-    })
+      date: "",
+      status: "",
+    });
+    setSupervisor(null);
     setLoading(true);
     setOrderClient(null);
     setorderDate(null);
@@ -47,10 +52,12 @@ export function GetOrder() {
         setOrderClient(response.data.client);
         setorderDate(response.data.orderDate);
         setOrderItems(response.data.item);
-        setOrderDelivery(curretState => ({...curretState, 
-          deliverdBy: response.data.delivery_partner, 
-          date : response.data.delivery_date
-        }))
+        setOrderDelivery((curretState) => ({
+          ...curretState,
+          deliverdBy: response.data.delivery_partner,
+          date: response.data.delivery_date,
+          status: response.data.status,
+        }));
         setSupervisor(response.data.supervisor);
       } catch (error) {
         console.log(error);
@@ -69,16 +76,52 @@ export function GetOrder() {
       const orderID = state.toString();
       setorderID(orderID);
     }
+
+    const checkUser = async () => {
+      try {
+        await axios.get(`http://127.0.0.1:5000/api/check/user`, {
+          withCredentials: true,
+        });
+        setUpdatePermission(true);
+      } catch (error) {
+        error.response ? setUpdatePermission(false) : nav("/");
+      }
+    };
+    checkUser();
   }, [state]);
 
   useEffect(() => {
-    if(state) {
+    if (state) {
       const handleClickAsync = async () => {
         await handleClick();
       };
       handleClickAsync();
     }
   }, [orderID]);
+
+  const handleUpdate = async(event) => {
+    event.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append("stauts", orderDelivery.status);
+      formData.append("orderID", orderID);
+      const response = await axios.post(
+        "http://127.0.0.1:5000/api/status-update",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      );
+        console.log(response);
+        setDoUpdate(false)
+    } catch (error) {
+      console.log(error);
+        error.response ? setError(error.response.data.error) : nav("/")
+    }
+  }
 
   return (
     <>
@@ -103,7 +146,7 @@ export function GetOrder() {
       </div>
 
       {error && <div>{error}</div>}
-
+      <br />
       {orderClient && orderDate && (
         <div>
           <div>Client : {unescapeHTML(orderClient)}</div>
@@ -111,6 +154,24 @@ export function GetOrder() {
           <div>Supervisor: {suerpvisor}</div>
           <div>Delivery Partner: {orderDelivery.deliverdBy}</div>
           <div>Delivery Date: {orderDelivery.date}</div>
+            { doUpdate ? (
+            <div>
+              <span>Delivery Status: </span>
+              <input type="text" 
+              value={orderDelivery.status}
+              onChange={(e) => setOrderDelivery((state) => ({...state, status : e.target.value}))}
+              />
+              <button onClick={(e) => handleUpdate(e)}>Update</button>
+            </div>
+            ) : (
+            <div> 
+              <span>Delivery Status: {orderDelivery.status} </span>
+              {updatePermission && (
+                <button onClick={(e) => setDoUpdate(state => !state)}>Update</button>
+              )}
+            </div>
+            )
+            }
           <br />
           <div>Items:</div>
           {orderItems.map((item) => {

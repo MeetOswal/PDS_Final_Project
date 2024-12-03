@@ -37,8 +37,8 @@ export function Ranking() {
               );
             setResponse(response.data)
         } catch (error) {
-            if (error.data) {
-                setError(error.data.error);
+            if (error.response) {
+                setError(error.response.data.error);
             }else{
                 nav("/");
             }

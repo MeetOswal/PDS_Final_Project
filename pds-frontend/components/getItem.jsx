@@ -116,9 +116,8 @@ export function GetItem() {
 
       {itemData.itemCategory && itemData.iDescription && (
         <div>
-          <div>Item ID : {itemID}</div>
-          <div>Category : {itemData.itemCategory}</div>
           <div>Item Description : {unescapeHTML(itemData.iDescription)}</div>
+          <div>Category : {itemData.itemCategory}</div>
           <div>Item Color : {unescapeHTML(itemData.color)}</div>
           <div>Category : {itemData.itemCategory}</div>
           <div>Sub-Category : {itemData.itemSubCategory}</div>
