@@ -1,8 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
-
+import { useContext } from "react";
+import { OrderContext } from "./orderContext";
 export function Logout({ logout }) {
   const [loading, setLoading] = useState(false);
+  const { deleteAll } = useContext(OrderContext);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -12,7 +14,7 @@ export function Logout({ logout }) {
       const response = await axios.get("http://127.0.0.1:5000/api/logout", {
         withCredentials: true,
       });
-
+      deleteAll();
       logout(false);
 
     } catch (error) {

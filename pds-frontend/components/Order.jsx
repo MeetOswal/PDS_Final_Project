@@ -4,14 +4,17 @@ import { useNavigate, Link } from "react-router-dom";
 import { sanitizeInput } from "./utils";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { useContext } from "react";
+import { OrderContext } from "./orderContext";
 export function Orders() {
   const [isStaff, setIsStaff] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [itemFields, setItemFields] = useState([{ id: 1, value: "" }]);
   const [result, setResult] = useState(null);
+  const { items, addItem, addClient, client, deleteAll } = useContext(OrderContext);
+  const nav = useNavigate();
+
   const [orderData, setOrderData] = useState({
     client: "",
     orderNotes: "",
@@ -32,7 +35,7 @@ export function Orders() {
       },
       [{ id: 1, value: "" }]
   ]
-  const nav = useNavigate();
+  
   useEffect(() => {
     const checkStaff = async () => {
       try {
@@ -51,30 +54,15 @@ export function Orders() {
       }
     };
     checkStaff();
-  }, []);
 
-  const isNumber = (value) => {
-    const phoneRegex = /^\d+$/;
-    return phoneRegex.test(value);
-  };
-
-  const validateItems = () => {
-    let validationError = null;
-
-    itemFields.forEach((item) => {
-      if (!isNumber(item.value)) {
-        validationError = `Item number with ID ${item.id} is invalid.`;
-      }
-    });
-
-    if (validationError) {
-      setError(validationError);
-      return false;
-    } else {
-      setError("");
-      return true;
+    if (client) {
+      setOrderData((currentState) => ({
+        ...currentState,
+        client: client
+      }))
+      setIsClient(true);
     }
-  };
+  }, []);
 
   const checkClient = async (e) => {
     e.preventDefault();
@@ -89,6 +77,7 @@ export function Orders() {
           }
         );
         setIsClient(true);
+        addClient(orderData.client)
       } catch (error) {
         setIsClient(false);
 
@@ -101,32 +90,17 @@ export function Orders() {
     }
   };
 
-  const addItemField = () => {
-    setItemFields((currentstate) => [
-      ...currentstate,
-      { id: currentstate.length + 1, value: "" },
-    ]);
-  };
 
-  const removeItemField = (id) => {
-    setItemFields(itemFields.filter((field) => field.id !== id));
-  };
 
-  const onItemChange = (id, value) => {
-    setItemFields(
-      itemFields.map((field) => (field.id == id ? { ...field, value } : field))
-    );
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
     setResult("");
     setError(null)
-    const isValidItems = validateItems();
 
-    if (isValidItems && orderData.client && orderData.orderDate && orderData.deliveryDate && orderData.deliveredBy ) {
-      const itemIDs = itemFields.map((field) => field.value);
+    if (orderData.client && orderData.orderDate && orderData.deliveryDate && orderData.deliveredBy ) {
+      const itemIDs = items;
       const orderDate = new Date(orderData.orderDate).toISOString().split("T")[0];
       const deliveryDate = new Date(orderData.deliveryDate).toISOString().split("T")[0];
       const formData = new FormData();
@@ -151,10 +125,12 @@ export function Orders() {
         );
         setResult(response.data.message);
         setOrderData(empty[0])
-        setItemFields(empty[1])
         setIsClient(false)
+        deleteAll();
+        
 
       } catch (error) {
+        console.log(error);
         setError(error.response.data.error);
       } finally {
         setLoading(false);
@@ -260,25 +236,18 @@ export function Orders() {
             />
             <br />
             <div>Order Items</div>
-            {itemFields.map((field) => {
+            {items.map((field, index) => {
               return (
-                <div key={field.id}>
-                  <label htmlFor={`item-${field.id}`}>Item {field.id}</label>
-                  <input
-                    type="text"
-                    value={field.value}
-                    onChange={(e) => onItemChange(field.id, e.target.value)}
-                  />
-                  {field.id !== 1 && (
-                    <a onClick={() => removeItemField(field.id)}>Delete</a>
-                  )}
+                <div key={index}>
+                  <label htmlFor={`item-${index}`}>Item : {field} </label>
+                  <a onClick={() => addItem(field)}>Delete</a>
                   <br />
                 </div>
               );
             })}
             <div>
               {" "}
-              <a onClick={addItemField}>Add Item</a>
+              <a onClick={() => nav('/categories')}>Add Item</a>
             </div>
             <button type="submit"> {!loading ? "Register" : "Sending"}</button>
           </>

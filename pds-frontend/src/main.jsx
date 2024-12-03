@@ -15,6 +15,8 @@ import { UserPorfile } from "../components/UserProfile.jsx";
 import { Donate } from "../components/Donate.jsx";
 import { Orders } from "../components/Order.jsx";
 import NotFound from "../components/NotFound.jsx";
+import { OrderProvider } from "../components/orderContext.jsx";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -57,24 +59,27 @@ const router = createBrowserRouter([
     element: <SupervisionTasks />,
   },
   {
-    path : "/profile",
-    element : <UserPorfile />
+    path: "/profile",
+    element: <UserPorfile />,
   },
   {
-    path : "/donate",
-    element : <Donate/>
-  },{
-    path : "/order",
-    element: <Orders/>
+    path: "/donate",
+    element: <Donate />,
   },
   {
-    path : "/*",
-    element : <NotFound/>
-  }
+    path: "/order",
+    element: <Orders />,
+  },
+  {
+    path: "/*",
+    element: <NotFound />,
+  },
 ]);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <OrderProvider>
+      <RouterProvider router={router} />
+    </OrderProvider>
   </StrictMode>
 );
