@@ -51,14 +51,6 @@ const router = createBrowserRouter([
     element: <Filter />,
   },
   {
-    path: "/volunteer-task",
-    element: <VolunteerTasks />,
-  },
-  {
-    path: "/supervision-task",
-    element: <SupervisionTasks />,
-  },
-  {
     path: "/profile",
     element: <UserPorfile />,
   },

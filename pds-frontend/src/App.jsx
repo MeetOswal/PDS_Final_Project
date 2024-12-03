@@ -98,18 +98,6 @@ function App() {
           <br />
           {
             permission && (
-              <Link to = "/volunteer-task">Volunteer Tasks</Link>
-            )
-          }
-          <br />
-          {
-            permission && (
-              <Link to = "/supervision-task">Supervision Tasks</Link>
-            )
-          }
-          <br />
-          {
-            permission && (
               <Link to = "/donate">New Donation</Link>
             )
           }
