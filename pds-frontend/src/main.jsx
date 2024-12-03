@@ -16,6 +16,7 @@ import { Donate } from "../components/Donate.jsx";
 import { Orders } from "../components/Order.jsx";
 import NotFound from "../components/NotFound.jsx";
 import { OrderProvider } from "../components/orderContext.jsx";
+import { Ranking } from "../components/Ranking.jsx";
 
 const router = createBrowserRouter([
   {
@@ -65,7 +66,10 @@ const router = createBrowserRouter([
   {
     path: "/*",
     element: <NotFound />,
-  },
+  },{
+    path: "/ranking",
+    element : <Ranking />
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(

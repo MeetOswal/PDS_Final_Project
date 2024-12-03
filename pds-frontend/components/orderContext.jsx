@@ -21,10 +21,6 @@ export const OrderProvider = ({ children }) => {
     }
   
     const addClient = (username) => setClient(username) 
-  
-    useEffect(() => {
-      console.log(items);
-    }, [items])
 
   return (
     <OrderContext.Provider value={{ items, addItem, addClient, client, deleteAll }}>

@@ -107,6 +107,12 @@ function App() {
               <Link to = "/order">New Order</Link>
             )
           }
+          <br />
+          {
+            permission && (
+              <Link to = "/ranking">Volunteer Ranking</Link>
+            )
+          }
           
           </>
           

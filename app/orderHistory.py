@@ -62,7 +62,7 @@ def getOrderHistory_function():
         
         connection.close()
         if not result:
-            return jsonify({'message' : 'No Order History Found'}), 200
+            return jsonify({'error' : 'No Order History Found'}), 404
         else:
             # Formating the Rsponse
             '''

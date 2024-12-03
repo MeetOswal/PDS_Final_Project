@@ -12,6 +12,7 @@ from app.tasksPerformed import tasksPerformed
 from app.getUser import user
 from app.phone import phone
 from app.createOrder import createOrder
+from app.rank import rank
 
 load_dotenv()
 
@@ -36,5 +37,6 @@ def create_app():
     app.register_blueprint(user)
     app.register_blueprint(phone)
     app.register_blueprint(createOrder)
+    app.register_blueprint(rank)
 
     return app
