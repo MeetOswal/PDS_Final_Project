@@ -33,19 +33,31 @@ def getOrderHistory_function():
         connection = get_db_connection()
         if not connection:
             response = {
-                "database error": "Cannot Connect to Database"
+                "error": "Cannot Connect to Database"
             }
             return jsonify(response), 500
         
+        """
+        (select distinct orderID
+        from `ordered` natural join itemin natural join delivered
+        where client = 'meetoswal' or supervisor = 'meetoswal' or userName = 'meetoswal')
+
+        select orderID, ItemID, iDescription
+        from orderIDs natural join (itemin natural join item)
+        """
+        
         with connection.cursor() as cursor:
             query = '''
+            with orderIDs as
+            (select distinct orderID, orderDate
+            from `ordered` natural join itemin natural join delivered
+            where client = %s or supervisor = %s or userName = %s)
+
             select orderID, orderDate, ItemID, iDescription
-            from (`ordered` natural join itemIn)
-            natural join item
-            where client = %s
-            order by orderDate
+            from (orderIDs natural join itemin) natural join item
+            order by orderDate desc
             '''
-            cursor.execute(query, (username))
+            cursor.execute(query, (username, username, username))
             result = cursor.fetchall()
         
         connection.close()

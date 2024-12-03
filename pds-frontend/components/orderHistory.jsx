@@ -70,6 +70,7 @@ export function OrderHistory() {
                     </div>
                   );
                 })}
+                <div><a onClick={() => nav("/order-details", {state :order.orderId})}>Get More Info..</a></div>
                 ***************************
               </div>
             );

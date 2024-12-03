@@ -41,8 +41,8 @@ def getOrder_function(order_id):
         with connection.cursor() as cursor:
             query = '''
             select ItemID, iDescription, mainCategory, 
-            pieceNum, pDescription, roomNum, shelfNum, orderDate, client
-            from `ordered` natural join
+            pieceNum, pDescription, roomNum, shelfNum, orderDate, client, userName, supervisor, date
+            from (`ordered` natural join delivered) natural join
             (itemin natural join item) natural join
             piece
             where orderID = %s
@@ -65,6 +65,9 @@ def getOrder_function(order_id):
             order_data = {
                 'client' : result[0]['client'],
                 'orderDate' : result[0]['orderDate'],
+                'delivery_partner' : result[0]['userName'],
+                'supervisor' : result[0]['supervisor'],
+                'delivery_date' : result[0]['date'],
                 'item' : []
             }
             for key, group in groupby(result, key = lambda x:(x['ItemID'], x['iDescription'])):
@@ -92,7 +95,7 @@ def getOrder_function(order_id):
         }
         return jsonify(response), 500
         
-    except Exception:
+    except Exception as e:
         response = {
             'error' : str(e)
         }

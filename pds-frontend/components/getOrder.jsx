@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { unescapeHTML } from "./utils";
+
 export function GetOrder() {
   const [orderID, setorderID] = useState("");
   const [loading, setLoading] = useState(false);
@@ -9,6 +10,13 @@ export function GetOrder() {
   const [orderClient, setOrderClient] = useState(null);
   const [orderDate, setorderDate] = useState(null);
   const [orderItems, setOrderItems] = useState([]);
+  const [orderDelivery, setOrderDelivery] = useState({
+    deliverdBy: "",
+    date : ""
+  });
+  const { state } = useLocation();
+  const nav = useNavigate();
+  const [suerpvisor,setSupervisor] = useState(null);
 
   const checkOrderID = (itemID) => {
     const itemRegex = /^\d+$/;
@@ -17,7 +25,11 @@ export function GetOrder() {
 
   const handleClick = async () => {
     let isvalid = checkOrderID(orderID);
-
+    setSupervisor(null);
+    setOrderDelivery({
+      deliverdBy: "",
+      date : ""
+    })
     setLoading(true);
     setOrderClient(null);
     setorderDate(null);
@@ -35,7 +47,13 @@ export function GetOrder() {
         setOrderClient(response.data.client);
         setorderDate(response.data.orderDate);
         setOrderItems(response.data.item);
+        setOrderDelivery(curretState => ({...curretState, 
+          deliverdBy: response.data.delivery_partner, 
+          date : response.data.delivery_date
+        }))
+        setSupervisor(response.data.supervisor);
       } catch (error) {
+        console.log(error);
         setError(error.response.data.error);
       } finally {
         setLoading(false);
@@ -46,9 +64,29 @@ export function GetOrder() {
     }
   };
 
+  useEffect(() => {
+    if (state) {
+      const orderID = state.toString();
+      setorderID(orderID);
+    }
+  }, [state]);
+
+  useEffect(() => {
+    if(state) {
+      const handleClickAsync = async () => {
+        await handleClick();
+      };
+      handleClickAsync();
+    }
+  }, [orderID]);
+
   return (
     <>
-      <Link to="/">Home</Link>
+      {!state ? (
+        <Link to="/">Home</Link>
+      ) : (
+        <Link onClick={() => nav(-1)}>Back</Link>
+      )}
 
       <div>
         <label htmlFor="order"></label>
@@ -57,8 +95,9 @@ export function GetOrder() {
           value={orderID}
           placeholder="Enter OrderID"
           onChange={(e) => setorderID(e.target.value)}
+          disabled={!!state}
         />
-        <button onClick={handleClick}>
+        <button onClick={handleClick} disabled={!!state}>
           {loading ? "Loading..." : "Get Item"}
         </button>
       </div>
@@ -67,9 +106,11 @@ export function GetOrder() {
 
       {orderClient && orderDate && (
         <div>
-          <div>Order ID : {orderID}</div>
           <div>Client : {unescapeHTML(orderClient)}</div>
           <div>Order Date : {orderDate}</div>
+          <div>Supervisor: {suerpvisor}</div>
+          <div>Delivery Partner: {orderDelivery.deliverdBy}</div>
+          <div>Delivery Date: {orderDelivery.date}</div>
           <br />
           <div>Items:</div>
           {orderItems.map((item) => {

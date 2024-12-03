@@ -5,7 +5,7 @@ import { Login } from "../components/login.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { RegisterUser } from "../components/registerUser.jsx";
 import { GetItem } from "../components/GetItem.jsx";
-import { GetOrder } from "../components/GetOrder.jsx";
+import { GetOrder } from "../components/getOrder.jsx";
 import { OrderHistory } from "../components/orderHistory.jsx";
 import { Category } from "../components/Categories.jsx";
 import { Filter } from "../components/Filters.jsx";
