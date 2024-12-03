@@ -35,10 +35,8 @@ export function Ranking() {
                   withCredentials: true,
                 }
               );
-            console.log(response.data);
             setResponse(response.data)
         } catch (error) {
-            console.log(error);
             if (error.data) {
                 setError(error.data.error);
             }else{
