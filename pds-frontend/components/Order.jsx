@@ -24,17 +24,14 @@ export function Orders() {
     deliveredStatus: "",
   });
 
-  const empty = [
-    {
+  const empty = {
         client: "",
         orderNotes: "",
         orderDate: "",
         deliveredBy: "",
         deliveryDate: "",
         deliveredStatus: "",
-      },
-      [{ id: 1, value: "" }]
-  ]
+      }
   
   useEffect(() => {
     const checkStaff = async () => {
@@ -124,7 +121,7 @@ export function Orders() {
           }
         );
         setResult(response.data.message);
-        setOrderData(empty[0])
+        setOrderData(empty)
         setIsClient(false)
         deleteAll();
         
@@ -254,8 +251,9 @@ export function Orders() {
         )}
         <br />
       </form>
-      {error && <div>{error}</div>}
       {result && <div>{result}</div>}
+      {error && <div>{error}</div>}
+      
     </>
   );
 }
