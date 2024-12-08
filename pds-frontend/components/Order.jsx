@@ -6,6 +6,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useContext } from "react";
 import { OrderContext } from "./orderContext";
+
+// import "../styles/Order.css";
+
+
 export function Orders() {
   const [isStaff, setIsStaff] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -87,6 +91,16 @@ export function Orders() {
     }
   };
 
+  const checkDelivery = () => {
+    if (orderData.deliveredBy === orderData.client){
+      setError('client and delivery partner cannot be same');
+      return false;
+    } else {
+      setError(null);
+      return true;
+    }
+  }
+
 
 
 
@@ -96,7 +110,7 @@ export function Orders() {
     setResult("");
     setError(null)
 
-    if (orderData.client && orderData.orderDate && orderData.deliveryDate && orderData.deliveredBy ) {
+    if (orderData.client && orderData.orderDate && orderData.deliveryDate && orderData.deliveredBy && checkDelivery()) {
       const itemIDs = items;
       const orderDate = new Date(orderData.orderDate).toISOString().split("T")[0];
       const deliveryDate = new Date(orderData.deliveryDate).toISOString().split("T")[0];
@@ -147,12 +161,14 @@ export function Orders() {
   }
 
   return (
-    <>
-      <Link to="/">Home</Link>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="clinet">Client </label>
+  <>
+    <Link to="/" className="">Home</Link>
+    <form onSubmit={handleSubmit} className="order-form">
+      <div className="client-section">
+        <label htmlFor="client" className="form-label">Client</label>
         <input
           type="text"
+          className="input-client"
           value={orderData.client}
           onChange={(e) =>
             setOrderData((currentState) => ({
@@ -162,98 +178,122 @@ export function Orders() {
           }
           required
         />
-
-        <button onClick={(e) => checkClient(e)}>Enter Client</button>
-        <br />
-        {isClient && (
-          <>
-            <label htmlFor="orderNotes">Order Notes</label>
-            <input
-              type="text"
-              value={orderData.orderNotes}
-              onChange={(e) =>
-                setOrderData((currentState) => ({
-                  ...currentState,
-                  orderNotes: e.target.value,
-                }))
-              }
-            />
+        <button onClick={(e) => checkClient(e)} className="btn-enter-client">Enter Client</button>
+      </div>
+      <br />
+      {isClient && (
+        <>
+          <div className="order-details">
+            <div className="form-group">
+              <label htmlFor="orderNotes" className="form-label">Order Notes</label>
+              <input
+                type="text"
+                className="input-order-notes"
+                value={orderData.orderNotes}
+                onChange={(e) =>
+                  setOrderData((currentState) => ({
+                    ...currentState,
+                    orderNotes: e.target.value,
+                  }))
+                }
+                disabled = {!!items}
+              />
+            </div>
             <br />
-            <label htmlFor="orderDate">Order Date</label>
-            <DatePicker
-              selected={orderData.orderDate}
-              placeholderText="MM/DD/YYYY"
-              onChange={(date) =>
-                setOrderData((currentState) => ({
-                  ...currentState,
-                  orderDate: date,
-                }))
-              }
-              required
-            />
+            <div className="form-group">
+              <label htmlFor="orderDate" className="form-label">Order Date</label>
+              <DatePicker
+                selected={orderData.orderDate}
+                className="datepicker-order-date"
+                placeholderText="MM/DD/YYYY"
+                onChange={(date) =>
+                  setOrderData((currentState) => ({
+                    ...currentState,
+                    orderDate: date,
+                  }))
+                }
+                required
+                disabled = {!!items}
+              />
+            </div>
             <br />
-            <label htmlFor="deliveredBy">Delivery Partner Username</label>
-            <input
-              type="text"
-              value={orderData.deliveredBy}
-              onChange={(e) =>
-                setOrderData((currentState) => ({
-                  ...currentState,
-                  deliveredBy: e.target.value,
-                }))
-              }
-              required
-            />
+            <div className="form-group">
+              <label htmlFor="deliveredBy" className="form-label">Delivery Partner Username</label>
+              <input
+                type="text"
+                className="input-delivered-by"
+                value={orderData.deliveredBy}
+                onChange={(e) =>
+                  setOrderData((currentState) => ({
+                    ...currentState,
+                    deliveredBy: e.target.value,
+                  }))
+                }
+                required
+                disabled = {!!items}
+              />
+            </div>
             <br />
-            <label htmlFor="deliveryDate">Delivery Date</label>
-            <DatePicker
-              selected={orderData.deliveryDate}
-              placeholderText="MM/DD/YYYY"
-              onChange={(date) =>
-                setOrderData((currentState) => ({
-                  ...currentState,
-                  deliveryDate: date,
-                }))
-              }
-              minDate={orderData.orderDate}
-              required
-            />
+            <div className="form-group">
+              <label htmlFor="deliveryDate" className="form-label">Delivery Date</label>
+              <DatePicker
+                selected={orderData.deliveryDate}
+                className="datepicker-delivery-date"
+                placeholderText="MM/DD/YYYY"
+                onChange={(date) =>
+                  setOrderData((currentState) => ({
+                    ...currentState,
+                    deliveryDate: date,
+                  }))
+                }
+                minDate={orderData.orderDate}
+                required
+                disabled = {!!items}
+              />
+            </div>
             <br />
-            <label htmlFor="deliveryStatus">Delivery Status</label>
-            <input
-              type="text"
-              value={orderData.deliveredStatus}
-              onChange={(e) =>
-                setOrderData((currentState) => ({
-                  ...currentState,
-                  deliveredStatus: e.target.value,
-                }))
-              }
-              required
-            />
-            <br />
-            <div>Order Items</div>
+            <div className="form-group">
+              <label htmlFor="deliveryStatus" className="form-label">Delivery Status</label>
+              <input
+                type="text"
+                className="input-delivery-status"
+                value={orderData.deliveredStatus}
+                onChange={(e) =>
+                  setOrderData((currentState) => ({
+                    ...currentState,
+                    deliveredStatus: e.target.value,
+                  }))
+                }
+                disabled = {!!items}
+                required
+              />
+            </div>
+          </div>
+          <br />
+          <div className="order-items">
+            <div className="order-items-header">Order Items</div>
             {items.map((field, index) => {
               return (
-                <div key={index}>
-                  <label htmlFor={`item-${index}`}>Item : {field} </label>
-                  <a onClick={() => addItem(field)}>Delete</a>
+                <div key={index} className="order-item">
+                  <label htmlFor={`item-${index}`} className="item-label">Item: {field}</label>
+                  <a onClick={() => addItem(field)} className="item-delete-link">Delete</a>
                   <br />
                 </div>
               );
             })}
-            <div>
-              {" "}
+            <div className="add-item-link">
               <a onClick={() => nav('/categories')}>Add Item</a>
             </div>
-            <button type="submit"> {!loading ? "Register" : "Sending"}</button>
-          </>
-        )}
-        <br />
-      </form>
-      {result && <div>{result}</div>}
-      {error && <div>{error}</div>}
-      
-    </>
-  );
+          </div>
+          <button type="submit" className="btn-submit-order">
+            {!loading ? "Register" : "Sending"}
+          </button>
+        </>
+      )}
+      <br />
+    </form>
+    {result && <div className="result-message">{result}</div>}
+    {error && <div className="error-message">{error}</div>}
+  </>
+);
 }

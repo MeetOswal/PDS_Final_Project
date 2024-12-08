@@ -3,6 +3,10 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { Logout } from "../components/logout";
 import validator from "validator";
+// import LoadingAnimation from "../components/Loading";
+
+import "../styles/App.css";
+import "../styles/auth-button.css";
 
 function App() {
   const [userData, setUserData] = useState(null);
@@ -10,6 +14,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [error, setError] = useState(false);
   const [permission, setPermission] = useState(false);
+
   const getUser = async () => {
     try {
       const response = await axios.get("http://127.0.0.1:5000/api/profile", {
@@ -17,13 +22,12 @@ function App() {
       });
       return response.data;
     } catch (error) {
-        if(error.response && error.response.data) {
-          return error.response.data;
-        }
-        else {
-          setError("Server Not Found");
-          return {"error": ""}
-        }
+      if (error.response && error.response.data) {
+        return error.response.data;
+      } else {
+        setError("Server Not Found");
+        return { error: "" };
+      }
     }
   };
 
@@ -70,56 +74,44 @@ function App() {
     return <div>Loading...</div>;
   }
   if (error) {
-    return <div>Server Not Found</div>
+    return <div>Server Not Found</div>;
   }
 
   return (
-    <>
-      <div>Welcome, {unescapeHTML(userData)}</div>
-      <div>
-        {!loggedIn ? (
-          <Link to="/login">Login</Link>
-        ) : (
-          <Logout logout={logoutfunction} />
-        )}
-      </div>
-      {
-        loggedIn && (
-          <>
-          <Link to = "/profile">My Profile</Link>
-          <br />
-          <Link to="/get-item">Get Item</Link>
-          <br />
-          <Link to="/order-details">Order-Details</Link>
-          <br />
-          <Link to="/order-history">Your Order-History</Link>
-          <br />
-          <Link to = "/categories">Categories</Link>
-          <br />
-          {
-            permission && (
-              <Link to = "/donate">New Donation</Link>
-            )
-          }
-          <br />
-          {
-            permission && (
-              <Link to = "/order">New Order</Link>
-            )
-          }
-          <br />
-          {
-            permission && (
-              <Link to = "/ranking">Volunteer Ranking</Link>
-            )
-          }
-          
-          </>
-          
-        )
-      }
-
-    </>
+    <div className="app-container">
+      {!loggedIn ? (
+        <div className="welcome-container">
+          <div className="welcome-message">Welcome, {unescapeHTML(userData)}</div>
+          <div className="centered-button">
+            <Link to="/login" className="auth-button">Login</Link>
+          </div>
+        </div>
+      ) : (
+        <div className="logged-in-layout">
+          <div className="top-bar">
+            <div className="welcome-container">
+              <span className="welcome-message">Welcome, Meet</span>
+            </div>
+            <div className="home-title">Home</div>
+            <div className="logout-container">
+              <Logout logout={logoutfunction} />
+            </div>
+          </div>
+          <div className="menu-container">
+            <div className="menu">
+              <Link to="/profile" className="menu-item">My Profile</Link>
+              <Link to="/get-item" className="menu-item">Get Item</Link>
+              <Link to="/order-details" className="menu-item">Order Details</Link>
+              <Link to="/order-history" className="menu-item">Your Order History</Link>
+              <Link to="/categories" className="menu-item">Categories</Link>
+              {permission && <Link to="/donate" className="menu-item">New Donation</Link>}
+              {permission && <Link to="/order" className="menu-item">New Order</Link>}
+              {permission && <Link to="/ranking" className="menu-item">Volunteer Ranking</Link>}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

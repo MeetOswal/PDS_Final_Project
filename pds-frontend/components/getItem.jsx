@@ -3,6 +3,8 @@ import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { unescapeHTML } from "./utils";
 
+import "../styles/get-item.css";
+
 export function GetItem() {
   const [itemID, setItemID] = useState("");
   const [loading, setLoading] = useState(false);
@@ -91,61 +93,69 @@ export function GetItem() {
     }
   }, [itemID]);
 
-  return (
-    <>
+return (
+  <>
+    <div className="header-container">
       {!state ? (
-        <Link to="/">Home</Link>
+        <Link to="/" className="home-link">Home</Link>
       ) : (
-        <Link onClick={() => nav(-1)}>Back</Link>
+        <Link onClick={() => nav(-1)} className="back-link">Back</Link>
       )}
+      <div id="page-title">Search Items</div>
+    </div>
 
-      <div>
-        <label htmlFor="item"></label>
-        <input
-          type="text"
-          value={itemID}
-          placeholder="Enter ItemID"
-          onChange={(e) => setItemID(e.target.value)}
-          disabled={!!state}
-        />
-        <button onClick={handleClick} disabled = {!!state}>
-          {loading ? "Loading..." : "Get Item"}
-        </button>
-      </div>
-      {error && <div>{error}</div>}
 
-      {itemData.itemCategory && itemData.iDescription && (
-        <div>
-          <div>Item Description : {unescapeHTML(itemData.iDescription)}</div>
-          <div>Category : {itemData.itemCategory}</div>
-          <div>Item Color : {unescapeHTML(itemData.color)}</div>
-          <div>Category : {itemData.itemCategory}</div>
-          <div>Sub-Category : {itemData.itemSubCategory}</div>
-          <div>Item Material : {unescapeHTML(itemData.material)}</div>
-          <div>Item is New : {itemData.isNew ? <>Yes</> : <>No</>}</div>
-          <div>
-            Item has more than 1 Pieces :{" "}
-            {itemData.hasPieces ? <>Yes</> : <>No</>}
-          </div>
-          <br />
-          <div>Pieces:</div>
-          {itemPieces.map((piece, index) => {
-            return (
-              <div key={index}>
-                <div>Piece Number : {piece.pieceNum}</div>
-                <div>Piece Description: {unescapeHTML(piece.pDescription)}</div>
-                <div>
-                  Piece Location:
-                  <div>Room Number: {piece.roomNum}</div>
-                  <div>Shelf Number: {piece.shelfNum}</div>
-                </div>
-                <br />
-              </div>
-            );
-          })}
+    <div className="input-container">
+      <label htmlFor="item" className="item-label"></label>
+      <input
+        type="text"
+        value={itemID}
+        placeholder="Enter ItemID"
+        onChange={(e) => setItemID(e.target.value)}
+        disabled={!!state}
+        className="item-input"
+      />
+      <button 
+        onClick={handleClick} 
+        disabled={!!state} 
+        className="get-item-button"
+      >
+        {loading ? "Loading..." : "Search"}
+      </button>
+    </div>
+    
+    {error && <div className="error-message">{error}</div>}
+
+    {itemData.itemCategory && itemData.iDescription && (
+      <div className="item-details-container">
+        <div className="item-description">Item Description: {unescapeHTML(itemData.iDescription)}</div>
+        <div className="item-category">Category: {itemData.itemCategory}</div>
+        <div className="item-color">Item Color: {unescapeHTML(itemData.color)}</div>
+        <div className="item-category">Category: {itemData.itemCategory}</div>
+        <div className="item-sub-category">Sub-Category: {itemData.itemSubCategory}</div>
+        <div className="item-material">Item Material: {unescapeHTML(itemData.material)}</div>
+        <div className="item-is-new">Item is New: {itemData.isNew ? <>Yes</> : <>No</>}</div>
+        <div className="item-has-pieces">
+          Item has more than 1 Piece: {itemData.hasPieces ? <>Yes</> : <>No</>}
         </div>
-      )}
-      {itemIamge && <img src={itemIamge} />}
-    </>
-  );
+        <br />
+        <div className="pieces-title">Pieces:</div>
+        {itemPieces.map((piece, index) => (
+          <div key={index} className="piece-container">
+            <div className="piece-number">Piece Number: {piece.pieceNum}</div>
+            <div className="piece-description">Piece Description: {unescapeHTML(piece.pDescription)}</div>
+            <div className="piece-location">
+              Piece Location:
+              <div className="room-number">Room Number: {piece.roomNum}</div>
+              <div className="shelf-number">Shelf Number: {piece.shelfNum}</div>
+            </div>
+            <br />
+          </div>
+        ))}
+      </div>
+    )}
+
+    {itemIamge && <img src={itemIamge} alt="Item" className="item-image" />}
+  </>
+);
 }

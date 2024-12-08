@@ -2,6 +2,9 @@ import { useState } from "react";
 import axios from "axios";
 import { useContext } from "react";
 import { OrderContext } from "./orderContext";
+
+import "../styles/auth-button.css";
+
 export function Logout({ logout }) {
   const [loading, setLoading] = useState(false);
   const { deleteAll } = useContext(OrderContext);
@@ -31,7 +34,7 @@ export function Logout({ logout }) {
     }
   return (
     <>
-      <button onClick={handleSubmit}>Logout</button>
+      <button className="logout-button" onClick={handleSubmit}>Logout</button>
     </>
   );
 }

@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { unescapeHTML } from "./utils";
 import { Link } from "react-router-dom";
+import "../styles/userProfile.css";
+
 export function UserPorfile() {
   const [userName, setUserName] = useState("");
   const [fname, setFname] = useState(null);
@@ -127,43 +129,69 @@ export function UserPorfile() {
     return <div>Loading...</div>;
   }
 
-  return (
-    <>
-    <Link to = "/">Home</Link>
-      <div>Your Profile</div>
-      <div>username: {unescapeHTML(userName)}</div>
-      <div>
-        Name : {unescapeHTML(fname)}, {unescapeHTML(lname)}
+return (
+  <>
+    <Link to="/" className="home-link">Home</Link>
+    <div className="profile-container">
+      <div className="profile-header">Your Profile</div>
+      <div className="profile-username">Username: {unescapeHTML(userName)}</div>
+      <div className="profile-name">
+        Name: {unescapeHTML(fname)}, {unescapeHTML(lname)}
       </div>
-      <div>Email: {unescapeHTML(email)}</div>
-      {phone.map((number, index) => (
-        <div key={index}>
-          <div>
-            Phone {index + 1} : {number}
-            {deletePhone && (
-            <button onClick = {(e) => handleDeletePhone(e, number)}> Delete </button>
-          )}
+      <div className="profile-email">Email: {unescapeHTML(email)}</div>
+      <div className="profile-phones">
+        {phone.map((number, index) => (
+          <div key={index} className="phone-item">
+            <div>
+              Phone {index + 1}: {number}
+              {deletePhone && (
+                <button
+                  className="delete-phone-button"
+                  onClick={(e) => handleDeletePhone(e, number)}
+                >
+                  Delete
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
 
-      <button onClick={() => setDeletePhone((currentState) => !currentState)}>Delete Phone</button>
-      <button onClick={() => setAddPhone((currentState) => !currentState)}>
-        {!addPhone ? <div>Add New Phone</div> : <div> Remove New Phone</div>}
+      <button
+        className="toggle-delete-phone-button"
+        onClick={() => setDeletePhone((currentState) => !currentState)}
+      >
+        Delete Phone
+      </button>
+      <button
+        className="toggle-add-phone-button"
+        onClick={() => setAddPhone((currentState) => !currentState)}
+      >
+        {!addPhone ? <div>Add New Phone</div> : <div>Remove New Phone</div>}
       </button>
 
       {addPhone && (
-        <div>
-          <label htmlFor="newPhone">New Phone Number</label>
+        <div className="add-phone-container">
+          <label htmlFor="newPhone" className="new-phone-label">
+            New Phone Number
+          </label>
           <input
             type="text"
+            id="newPhone"
+            className="new-phone-input"
             value={newPhone}
             onChange={(event) => setNewPhone(event.target.value)}
           />
-          <button onClick={(e) => handleSubmitPhone(e)}>Add Phone</button>
+          <button
+            className="add-phone-button"
+            onClick={(e) => handleSubmitPhone(e)}
+          >
+            Add Phone
+          </button>
         </div>
       )}
-      {result && <div>{result}</div>}
-    </>
-  );
+      {result && <div className="result-message">{result}</div>}
+    </div>
+  </>
+);
 }

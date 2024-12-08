@@ -3,6 +3,8 @@ import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { unescapeHTML } from "./utils";
 
+import "../styles/get-order.css";
+
 export function GetOrder() {
   const [updatePermission, setUpdatePermission] = useState(false);
   const [doUpdate, setDoUpdate] = useState(false);
@@ -123,81 +125,97 @@ export function GetOrder() {
     }
   }
 
-  return (
-    <>
+return (
+  <>
+    {/* Navigation Bar */}
+    <div className="top-bar">
       {!state ? (
-        <Link to="/">Home</Link>
+        <Link to="/" className="home-link">Home</Link>
       ) : (
-        <Link onClick={() => nav(-1)}>Back</Link>
+        <Link onClick={() => nav(-1)} className="back-link">Back</Link>
       )}
+      <h1 id="page-title-get-order">Order Details</h1>
+    </div>
 
-      <div>
-        <label htmlFor="order"></label>
-        <input
-          type="text"
-          value={orderID}
-          placeholder="Enter OrderID"
-          onChange={(e) => setorderID(e.target.value)}
-          disabled={!!state}
-        />
-        <button onClick={handleClick} disabled={!!state}>
-          {loading ? "Loading..." : "Get Item"}
-        </button>
-      </div>
+    {/* Search Bar */}
+    <div className="search-bar">
+      <label htmlFor="order" className="search-label"></label>
+      <input
+        type="text"
+        value={orderID}
+        placeholder="Enter OrderID"
+        onChange={(e) => setorderID(e.target.value)}
+        disabled={!!state}
+        className="search-input"
+      />
+      <button onClick={handleClick} disabled={!!state} className="search-button">
+        {loading ? "Loading..." : "Get Item"}
+      </button>
+    </div>
 
-      {error && <div>{error}</div>}
-      <br />
-      {orderClient && orderDate && (
-        <div>
-          <div>Client : {unescapeHTML(orderClient)}</div>
-          <div>Order Date : {orderDate}</div>
-          <div>Supervisor: {suerpvisor}</div>
-          <div>Delivery Partner: {orderDelivery.deliverdBy}</div>
-          <div>Delivery Date: {orderDelivery.date}</div>
-            { doUpdate ? (
-            <div>
-              <span>Delivery Status: </span>
-              <input type="text" 
-              value={orderDelivery.status}
-              onChange={(e) => setOrderDelivery((state) => ({...state, status : e.target.value}))}
-              />
-              <button onClick={(e) => handleUpdate(e)}>Update</button>
-            </div>
-            ) : (
-            <div> 
-              <span>Delivery Status: {orderDelivery.status} </span>
-              {updatePermission && (
-                <button onClick={(e) => setDoUpdate(state => !state)}>Update</button>
-              )}
-            </div>
-            )
-            }
-          <br />
-          <div>Items:</div>
-          {orderItems.map((item) => {
-            return (
-              <div key={item.ItemID}>
-                <div>Item ID : {item.ItemID}</div>
-                <div>Item Description: {unescapeHTML(item.iDescription)}</div>
-                <br />
-                {item.piece.map((pie) => {
-                  return (
-                    <div key={pie.pieceNum}>
-                      <div>Piece Number: {pie.pieceNum}</div>
-                      <div>Piece Description: {unescapeHTML(pie.pDescription)}</div>
-                      <div>Piece Location:</div>
-                      <div>Room Number: {pie.roomNum}</div>
-                      <div>Shelf Number: {pie.shelfNum}</div>
-                      <br />
-                    </div>
-                  );
-                })}
-                **************************************
+    {error && <div className="error-message">{error}</div>}
+    <br />
+
+    {/* Order and Items Section */}
+    {orderClient && orderDate && (
+      <div className="order-page">
+        <div className="client-info-container">
+          <h2 className="client-info-title">Client Info</h2>
+          <div className="order-info-card">
+            <p><strong>Client:</strong> {unescapeHTML(orderClient)}</p>
+            <p><strong>Order Date:</strong> {orderDate}</p>
+            <p><strong>Supervisor:</strong> {suerpvisor}</p>
+            <p><strong>Delivery Partner:</strong> {orderDelivery.deliverdBy}</p>
+            <p><strong>Delivery Date:</strong> {orderDelivery.date}</p>
+            {doUpdate ? (
+              <div className="delivery-status-update">
+                <span><strong>Delivery Status:</strong></span>
+                <input
+                  type="text"
+                  value={orderDelivery.status}
+                  onChange={(e) => setOrderDelivery((state) => ({ ...state, status: e.target.value }))}
+                  className="status-input"
+                />
+                <button onClick={(e) => handleUpdate(e)} className="update-button">Update</button>
               </div>
-            );
-          })}
+            ) : (
+              <div className="delivery-status-display">
+                <p><strong>Delivery Status:</strong> {orderDelivery.status}</p>
+                {updatePermission && (
+                  <button onClick={() => setDoUpdate((state) => !state)} className="toggle-update-button">
+                    Update
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      )}
-    </>
-  );
+
+        {/* Items Section */}
+        <div className="items-container">
+          <h2 className="items-title">Items</h2>
+          {orderItems.map((item) => (
+            <div key={item.ItemID} className="item-card">
+              <p><strong>Item ID:</strong> {item.ItemID}</p>
+              <p><strong>Item Description:</strong> {unescapeHTML(item.iDescription)}</p>
+              <div className="pieces-container">
+                {item.piece.map((pie) => (
+                  <div key={pie.pieceNum} className="piece-card">
+                    <p><strong>Piece Number:</strong> {pie.pieceNum}</p>
+                    <p><strong>Piece Description:</strong> {unescapeHTML(pie.pDescription)}</p>
+                    <p><strong>Piece Location:</strong></p>
+                    <ul>
+                      <li><strong>Room Number:</strong> {pie.roomNum}</li>
+                      <li><strong>Shelf Number:</strong> {pie.shelfNum}</li>
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </>
+);
 }
