@@ -4,14 +4,15 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { sanitizeInput } from "./utils";
 
-import "../styles/auth-button.css";
-
+import "../styles/login.css";
+import "../styles/home-button.css";
 
 export function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const nav = useNavigate();
 
   const disabled = !username || !password;
@@ -46,34 +47,59 @@ export function Login() {
     }
   };
 
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
   return (
     <>
-      <Link to="/">Home</Link>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button className="auth-button" type="submit" disabled={disabled || loading}>
-          {loading ? "Logging In..." : "Login"}
-        </button>
-        {error ? <div>{error}</div> : <></>}
-      </form>
-      <Link to="/register">Register</Link>
+      <Link to="/" className="home-link">Home</Link>
+      <div className="login-container">
+        <div className="page-title">Log In</div>
+        <form onSubmit={handleSubmit} className="login-form" action="/login">
+          <div className="form-group">
+            <label htmlFor="username" className="form-label">Username</label>
+            <input
+              type="text"
+              name="username"
+              autoComplete="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="form-input"
+              required
+            />
+
+          </div>
+          <div className="form-group">
+            <label htmlFor="password" className="form-label">Password</label>
+            <input
+              type={passwordVisible ? "text" : "password"}
+              name='password'
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="form-input"
+              required
+            />
+            <span
+                className="toggle-password"
+                onClick={togglePasswordVisibility}
+              >
+                {passwordVisible ? "🙈" : "👁️"}
+              </span>
+          </div>
+          <button
+            className="login-button"
+            type="submit"
+            disabled={disabled || loading}
+          >
+            {loading ? "Logging In..." : "Login"}
+          </button>
+          {error && <div className="error-message">{error}</div>}
+          <Link to="/register" className="register-link">Not a user? Sign Up Instead</Link>
+        </form>
+      </div>
     </>
   );
 }
