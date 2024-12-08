@@ -19,9 +19,10 @@ body {
     font-size: 2rem;
     font-weight: bold;
     color: #007bff;
-    margin-bottom: 20px;
-    /* Add space below the message */
+    margin-bottom: 20px; /* Add space below the message */
 }
+
+
 
 /* Centered Layout */
 .welcome-container {
@@ -37,7 +38,7 @@ body {
 .home-title {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #fff;
+    color: white;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);

@@ -1,7 +1,7 @@
 
 .input-container {
     position: absolute;
-    top: 13%;
+    top: 1%;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -85,7 +85,7 @@
     margin-bottom: 20px;
 }
 
-.page-title {
+#page-title {
     font-size: 24px;
     font-weight: bold;
     text-align: center;

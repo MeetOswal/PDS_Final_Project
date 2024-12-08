@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { Logout } from "../components/logout";
 import validator from "validator";
+// import LoadingAnimation from "../components/Loading";
 
 import "../styles/App.css";
 import "../styles/auth-button.css";

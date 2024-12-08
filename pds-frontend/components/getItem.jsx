@@ -101,7 +101,7 @@ return (
       ) : (
         <Link onClick={() => nav(-1)} className="back-link">Back</Link>
       )}
-      <div className="page-title">Search Items</div>
+      <div id="page-title">Search Items</div>
     </div>
 
 
