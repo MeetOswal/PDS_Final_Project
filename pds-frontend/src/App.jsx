@@ -88,27 +88,25 @@ function App() {
       ) : (
         <div className="logged-in-layout">
           <div className="top-bar">
-            <div className="welcome-message">Welcome, {unescapeHTML(userData)}</div>
-            <div className="logout-button">
-              <Logout logout={logoutfunction} />
+            <div className="welcome-container">
+              <span className="welcome-message">Welcome, Meet</span>
+            </div>
+            <div className="home-title">Home</div>
+            <div className="logout-container">
+              <button className="logout-button">Logout</button>
             </div>
           </div>
-          <div className="menu">
-            <Link to="/profile">My Profile</Link>
-            <br />
-            <Link to="/get-item">Get Item</Link>
-            <br />
-            <Link to="/order-details">Order Details</Link>
-            <br />
-            <Link to="/order-history">Your Order History</Link>
-            <br />
-            <Link to="/categories">Categories</Link>
-            <br />
-            {permission && <Link to="/donate">New Donation</Link>}
-            <br />
-            {permission && <Link to="/order">New Order</Link>}
-            <br />
-            {permission && <Link to="/ranking">Volunteer Ranking</Link>}
+          <div className="menu-container">
+            <div className="menu">
+              <Link to="/profile" className="menu-item">My Profile</Link>
+              <Link to="/get-item" className="menu-item">Get Item</Link>
+              <Link to="/order-details" className="menu-item">Order Details</Link>
+              <Link to="/order-history" className="menu-item">Your Order History</Link>
+              <Link to="/categories" className="menu-item">Categories</Link>
+              {permission && <Link to="/donate" className="menu-item">New Donation</Link>}
+              {permission && <Link to="/order" className="menu-item">New Order</Link>}
+              {permission && <Link to="/ranking" className="menu-item">Volunteer Ranking</Link>}
+            </div>
           </div>
         </div>
       )}
