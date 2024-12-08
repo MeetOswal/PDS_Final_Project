@@ -4,6 +4,9 @@ import { Link } from "react-router-dom";
 import { Logout } from "../components/logout";
 import validator from "validator";
 
+import "../styles/App.css";
+import "../styles/auth-button.css";
+
 function App() {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);

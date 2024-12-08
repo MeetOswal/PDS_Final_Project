@@ -3,6 +3,10 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { sanitizeInput } from "./utils";
+
+import "../styles/auth-button.css";
+
+
 export function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -64,7 +68,7 @@ export function Login() {
             required
           />
         </div>
-        <button type="submit" disabled={disabled || loading}>
+        <button className="auth-button" type="submit" disabled={disabled || loading}>
           {loading ? "Logging In..." : "Login"}
         </button>
         {error ? <div>{error}</div> : <></>}
