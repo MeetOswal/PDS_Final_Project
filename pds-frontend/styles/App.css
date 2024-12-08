@@ -1,0 +1,100 @@
+/* General Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+}
+
+/* App Container */
+.app-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Welcome Message */
+.welcome-message {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Centered Layout */
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Auth Button */
+.auth-button {
+    text-decoration: none;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #007bff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.auth-button:hover {
+    background-color: #0056b3;
+}
+
+/* Logged-In Layout */
+.logged-in-layout {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+/* Top Bar for Logged-In Layout */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+}
+
+.top-bar .welcome-message {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.logout-button {
+    text-align: right;
+}
+
+.logout-button .auth-button {
+    margin: 0;
+}
+
+/* Menu */
+.menu {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #007bff;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    transition: color 0.3s ease;
+}
+
+.menu a:hover {
+    color: #0056b3;
+}

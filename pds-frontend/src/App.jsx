@@ -10,6 +10,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [error, setError] = useState(false);
   const [permission, setPermission] = useState(false);
+
   const getUser = async () => {
     try {
       const response = await axios.get("http://127.0.0.1:5000/api/profile", {
@@ -17,13 +18,12 @@ function App() {
       });
       return response.data;
     } catch (error) {
-        if(error.response && error.response.data) {
-          return error.response.data;
-        }
-        else {
-          setError("Server Not Found");
-          return {"error": ""}
-        }
+      if (error.response && error.response.data) {
+        return error.response.data;
+      } else {
+        setError("Server Not Found");
+        return { error: "" };
+      }
     }
   };
 
@@ -70,56 +70,46 @@ function App() {
     return <div>Loading...</div>;
   }
   if (error) {
-    return <div>Server Not Found</div>
+    return <div>Server Not Found</div>;
   }
 
   return (
-    <>
-      <div>Welcome, {unescapeHTML(userData)}</div>
-      <div>
-        {!loggedIn ? (
-          <Link to="/login">Login</Link>
-        ) : (
-          <Logout logout={logoutfunction} />
-        )}
-      </div>
-      {
-        loggedIn && (
-          <>
-          <Link to = "/profile">My Profile</Link>
-          <br />
-          <Link to="/get-item">Get Item</Link>
-          <br />
-          <Link to="/order-details">Order-Details</Link>
-          <br />
-          <Link to="/order-history">Your Order-History</Link>
-          <br />
-          <Link to = "/categories">Categories</Link>
-          <br />
-          {
-            permission && (
-              <Link to = "/donate">New Donation</Link>
-            )
-          }
-          <br />
-          {
-            permission && (
-              <Link to = "/order">New Order</Link>
-            )
-          }
-          <br />
-          {
-            permission && (
-              <Link to = "/ranking">Volunteer Ranking</Link>
-            )
-          }
-          
-          </>
-          
-        )
-      }
-
-    </>
+    <div className="app-container">
+      {!loggedIn ? (
+        <div className="welcome-container">
+          <div className="welcome-message">Welcome, {unescapeHTML(userData)}</div>
+          <div className="centered-button">
+            <Link to="/login" className="auth-button">Login</Link>
+          </div>
+        </div>
+      ) : (
+        <div className="logged-in-layout">
+          <div className="top-bar">
+            <div className="welcome-message">Welcome, {unescapeHTML(userData)}</div>
+            <div className="logout-button">
+              <Logout logout={logoutfunction} />
+            </div>
+          </div>
+          <div className="menu">
+            <Link to="/profile">My Profile</Link>
+            <br />
+            <Link to="/get-item">Get Item</Link>
+            <br />
+            <Link to="/order-details">Order Details</Link>
+            <br />
+            <Link to="/order-history">Your Order History</Link>
+            <br />
+            <Link to="/categories">Categories</Link>
+            <br />
+            {permission && <Link to="/donate">New Donation</Link>}
+            <br />
+            {permission && <Link to="/order">New Order</Link>}
+            <br />
+            {permission && <Link to="/ranking">Volunteer Ranking</Link>}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
