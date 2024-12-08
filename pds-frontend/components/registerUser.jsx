@@ -3,17 +3,20 @@ import axios from "axios";
 import validator from "validator";
 import { Link, useNavigate } from "react-router-dom";
 
+import "../styles/home-button.css";
+import "../styles/registerUser.css";
+
 export function RegisterUser() {
   const [userName, setUserName] = useState("");
-  const [passoword, setPasssword] = useState("");
+  const [password, setPasssword] = useState("");
   const [fname, setFname] = useState("");
   const [lname, setLaname] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState({
-    Client : false,
-    Donator : false,
-    Staff : false,
-    Volunteer : false,
+    Client: false,
+    Donator: false,
+    Staff: false,
+    Volunteer: false,
   });
   const [loading, setLoading] = useState(false);
   const [Error, setError] = useState("");
@@ -69,12 +72,12 @@ export function RegisterUser() {
 
   const validateRoles = (roles) => {
     if (roles.length < 1) {
-      setError('No Role Selected')
+      setError("No Role Selected");
       return false;
-    }else {
+    } else {
       return true;
     }
-  }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -83,19 +86,18 @@ export function RegisterUser() {
 
     const isValidPhone = validatePhoneNumbers();
     const isValidEmail = validateEmail();
-    let roles = []
+    let roles = [];
     role.Client ? roles.push("Client") : null;
-    role.Donator ? roles.push("Donator"): null;
+    role.Donator ? roles.push("Donator") : null;
     role.Volunteer ? roles.push("Volunteer") : null;
     role.Staff ? roles.push("Staff") : null;
 
     const checkRoles = validateRoles(roles);
     if (isValidPhone && isValidEmail && checkRoles) {
-      
       const phoneNumbers = phoneFields.map((field) => field.value);
       const formData = new FormData();
       formData.append("username", sanitizeInput(userName));
-      formData.append("password", passoword);
+      formData.append("password", password);
       formData.append("fname", sanitizeInput(fname));
       formData.append("lname", sanitizeInput(lname));
       formData.append("email", sanitizeInput(email));
@@ -119,7 +121,7 @@ export function RegisterUser() {
       } finally {
         setLoading(false);
       }
-    }else{
+    } else {
       setLoading(false);
     }
   };
@@ -142,134 +144,161 @@ export function RegisterUser() {
   };
 
   return (
-    <div>
-      <Link to="/">Home</Link>
-      {result !== "User Registered Successfully" && (
-        <form onSubmit={handleSubmit}>
+  <div className="register-container">
+    <Link className="home-link" to="/">Home</Link>
+    <div className="page-title">Sign Up</div>
+    {result !== "User Registered Successfully" && (
+      <form onSubmit={handleSubmit} className="register-form">
+        <div className="form-group">
+          <label htmlFor="username">Username</label>
+          <input
+            type="text"
+            value={userName}
+            placeholder="Set Username"
+            onChange={(e) => setUserName(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            value={password}
+            placeholder="Set Password"
+            onChange={(e) => setPasssword(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="fname">First Name</label>
+          <input
+            type="text"
+            placeholder="Set First Name"
+            value={fname}
+            onChange={(e) => setFname(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="lname">Last Name</label>
+          <input
+            type="text"
+            placeholder="Set Last Name"
+            value={lname}
+            onChange={(e) => setLaname(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="email">Email</label>
+          <input
+            type="text"
+            placeholder="Set Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="form-group roles-group">
           <div>
-            <label htmlFor="username">Username</label>
             <input
-              type="text"
-              value={userName}
-              placeholder="Set Username"
-              onChange={(e) => setUserName(e.target.value)}
-              required
+              type="checkbox"
+              onChange={(e) =>
+                setRole((currentstate) => ({
+                  ...currentstate,
+                  Client: !role.Client,
+                }))
+              }
+              checked={role.Client}
             />
+            <label htmlFor="Client">Client</label>
           </div>
 
           <div>
-            <label htmlFor="password">Password</label>
             <input
-              type="password"
-              value={passoword}
-              placeholder="Set Password"
-              onChange={(e) => setPasssword(e.target.value)}
-              required
+              type="checkbox"
+              onChange={(e) =>
+                setRole((currentstate) => ({
+                  ...currentstate,
+                  Donator: !role.Donator,
+                }))
+              }
+              checked={role.Donator}
             />
+            <label htmlFor="Donator">Donator</label>
           </div>
 
           <div>
-            <label htmlFor="fname">First Name</label>
             <input
-              type="text"
-              placeholder="Set First Name"
-              value={fname}
-              onChange={(e) => setFname(e.target.value)}
-              required
+              type="checkbox"
+              onChange={(e) =>
+                setRole((currentstate) => ({
+                  ...currentstate,
+                  Volunteer: !role.Volunteer,
+                }))
+              }
+              checked={role.Volunteer}
             />
+            <label htmlFor="Volunteer">Volunteer</label>
           </div>
 
           <div>
-            <label htmlFor="lname">Last Name</label>
             <input
-              type="text"
-              placeholder="Set Last Name"
-              value={lname}
-              onChange={(e) => setLaname(e.target.value)}
-              required
+              type="checkbox"
+              onChange={(e) =>
+                setRole((currentstate) => ({
+                  ...currentstate,
+                  Staff: !role.Staff,
+                }))
+              }
+              checked={role.Staff}
             />
+            <label htmlFor="Staff">Staff</label>
           </div>
+        </div>
 
-          <div>
-            <label htmlFor="email">Email</label>
-            <input
-              type="text"
-              placeholder=" Set Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
-            <div>
+        <div className="form-group phone-group">
+          {phoneFields.map((field) => (
+            <div key={field.id} className="phone-field">
+              <label htmlFor={`phone-${field.id}`}>Phone {field.id}</label>
               <input
-                type="checkbox"
-                onChange={(e) => setRole(currentstate => ({...currentstate, Client : !role.Client}))}
-                checked={role.Client}
+                type="text"
+                placeholder={`Set Phone ${field.id}`}
+                id={`phone-${field.id}`}
+                value={field.value}
+                onChange={(e) => onPhoneChange(field.id, e.target.value)}
               />
-              <label htmlFor="Clinet"> Clinet</label>
+              {field.id == phoneFields.length && field.id != 1  && (
+                <a
+                  className="delete-phone"
+                  onClick={() => removePhoneField(field.id)}
+                >
+                  Delete
+                </a>
+              )}
             </div>
-
-            <div>
-              <input
-                type="checkbox"
-                onChange={(e) => setRole(currentstate => ({...currentstate, Donator : !role.Donator}))}
-                checked={role.Donator}
-              />
-              <label htmlFor="Clinet">Donator</label>
-            </div>
-
-            <div>
-              <input
-                type="checkbox"
-                onChange={(e) => setRole(currentstate => ({...currentstate, Volunteer : !role.Volunteer}))}
-                checked={role.Volunteer}
-              />
-              <label htmlFor="Clinet">Volunteer</label>
-            </div>
-
-            <div>
-              <input
-                type="checkbox"
-                onChange={(e) => setRole(currentstate => ({...currentstate, Staff : !role.Staff}))}
-                checked={role.Staff}
-              />
-              <label htmlFor="Staff">Staff</label>
-            </div>
-          </div>
-
-          {phoneFields.map((field) => {
-            return (
-              <div key={field.id}>
-                <label htmlFor={`phone-${field.id}`}>Phone {field.id}</label>
-                <input
-                  type="text"
-                  placeholder={` Set Phone ${field.id}`}
-                  id={`phone-${field.id}`}
-                  value={field.value}
-                  onChange={(e) => onPhoneChange(field.id, e.target.value)}
-                />
-                {field.id !== 1 && (
-                  <a onClick={() => removePhoneField(field.id)}>Delete</a>
-                )}
-              </div>
-            );
-          })}
-          <div>
-            {" "}
+          ))}
+          <div className="add-phone">
             <a onClick={addPhoneField}>Add Phone</a>
           </div>
+        </div>
 
-          <button type="submit">{!loading ? "Register" : "Sending"}</button>
-        </form>
-      )}
+        <button type="submit" className="register-button">
+          {!loading ? "Register" : "Sending"}
+        </button>
+      </form>
+    )}
 
-      {Error && <div>{Error}</div>}
-      {result && <div>{result}</div>}
-      {result == "User Registered Successfully" && (
-        <Link to="/login">Go to Login</Link>
-      )}
-    </div>
-  );
+    {Error && <div className="error-message">{Error}</div>}
+    {result && <div className="result-message">{result}</div>}
+    {result == "User Registered Successfully" && (
+      <Link to="/login" className="login-link">Go to Login</Link>
+    )}
+  </div>
+);
 }
