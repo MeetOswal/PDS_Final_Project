@@ -14,7 +14,7 @@ export function Filter() {
   const [prev, setPrev] = useState(false);
   const [page, setPage] = useState(1)
 
-  const { items, addItem } = useContext(OrderContext);
+  const { items, addItem, client } = useContext(OrderContext);
   const [isStaff, setIsStaff] = useState(false);
   const nav = useNavigate();
 
@@ -97,7 +97,7 @@ export function Filter() {
         fetchResponse.map((item) =>
           (
             <div key={item.ItemID}>
-              {isStaff && (
+              {isStaff && client && (
                 <div>
                   <button onClick={(e) => (addItem(item.ItemID))} disabled = {items.includes(item.ItemID)}>Add to cart</button>
                 </div>

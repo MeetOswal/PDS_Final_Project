@@ -7,6 +7,7 @@ export function OrderHistory() {
   const [client, setClient] = useState(null);
   const [orders, setOrders] = useState([]);
   const [error, setError] = useState(null);
+  const [filter, setFilter] = useState(['Client', 'Supervisor', 'Delivery'])
   const [loading, setLoading] = useState(true);
   const nav = useNavigate();
 
@@ -41,6 +42,10 @@ export function OrderHistory() {
     orderHistory();
   }, []);
 
+  const roleFilter = (value) => {
+    setFilter(currentState => (currentState.includes(value) ? currentState.filter(val => val !== value) : [...currentState, value]))
+  }
+
   if (loading) {
     return <div>Loading...</div>
   }
@@ -50,6 +55,27 @@ export function OrderHistory() {
     <>
         <Link to = "/">Home</Link>
       <h3>Order History</h3>
+      {client && (
+        <>
+        <input type="checkbox"
+        onChange={(e) => roleFilter('Client')}
+        checked= {filter.includes('Client')}
+         />
+        <label htmlFor="Client">Client</label>
+
+        <input type="checkbox"
+        onChange={(e) => roleFilter('Supervisor')}
+        checked= {filter.includes('Supervisor')}
+         />
+        <label htmlFor="Supervisor">Supervisor</label>
+
+        <input type="checkbox"
+        onChange={(e) => roleFilter('Delivery')}
+        checked= {filter.includes('Delivery')}
+         />
+        <label htmlFor="Delivery">Delivery Partner</label>
+        </>
+      )}
       {client ? (
         <>
           <div>User: {client}</div>
@@ -57,9 +83,11 @@ export function OrderHistory() {
           <br />
           {orders.map((order) => {
             return (
+              filter.includes(order.as) && (
               <div key={order.orderId}>
                 <div>Order Id: {order.orderId}</div>
                 <div>Order Date: {order.orderDate}</div>
+                <div>As : {order.as}</div>
                 <br />
                 {order.items.map((item) => {
                   return (
@@ -73,6 +101,7 @@ export function OrderHistory() {
                 <div><a onClick={() => nav("/order-details", {state :order.orderId})}>Get More Info..</a></div>
                 ***************************
               </div>
+              )
             );
           })}
         </>

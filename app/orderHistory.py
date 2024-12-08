@@ -49,11 +49,11 @@ def getOrderHistory_function():
         with connection.cursor() as cursor:
             query = '''
             with orderIDs as
-            (select distinct orderID, orderDate
+            (select distinct orderID, orderDate, client, supervisor, userName
             from `ordered` natural join itemin natural join delivered
             where client = %s or supervisor = %s or userName = %s)
 
-            select orderID, orderDate, ItemID, iDescription
+            select orderID, orderDate, ItemID, iDescription, client, supervisor, userName
             from (orderIDs natural join itemin) natural join item
             order by orderDate desc
             '''
@@ -64,23 +64,25 @@ def getOrderHistory_function():
         if not result:
             return jsonify({'error' : 'No Order History Found'}), 404
         else:
-            # Formating the Rsponse
-            '''
-            Remove duplicates cilent names
-            Group BY Order ID's
-            Aggregate Items in Orders.
-            '''
+
             order_data = {
                 'client' : username,
                 'orders' : []
             }
-            for key, group in groupby(result, key = lambda x: (x['orderID'], x['orderDate'])):
+            for key, group in groupby(result, key = lambda x: (x['orderID'], x['orderDate'], x['client'], x['supervisor'], x['userName'])):
                 order_details = {
                     'orderId' : key[0],
                     'orderDate' : key[1],
                     'items' : []
                 }
+                if key[2] == username:
+                    order_details['as'] = 'Client'
+                elif key[3] == username:
+                    order_details['as'] = 'Supervisor'
+                else:
+                    order_details['as'] = 'Delivery Partner'
                 for item in group:
+                    
                     order_details['items'].append({
                         'ItemID' : item['ItemID'],
                         'iDescription' : item['iDescription']

@@ -5,6 +5,7 @@ export const OrderContext = createContext();
 export const OrderProvider = ({ children }) => {
   const [items, setItems] = useState([]);
   const [client, setClient] = useState(null)
+  
   const addItem = (itemID) =>
     setItems((currentContext) => {
       if (currentContext.includes(itemID)) {

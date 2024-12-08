@@ -24,6 +24,8 @@ def ClientAuth(username):
         if 'username' not in session:
             return jsonify({'error': 'Cannot Access This Page'}), 404
         
+        if session['username'] == username:
+            return jsonify({'error': 'Staff cannot be a client Client '}), 403
         connection = get_db_connection()
 
         if not connection:
@@ -52,7 +54,7 @@ def ClientAuth(username):
         return jsonify({'error': str(e)}), 500
     
     except KeyError as e:
-        return jsonify({'error': 'User not found'}), 500
+        return jsonify({'error': 'Login not found'}), 500
     
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
@@ -97,7 +99,7 @@ def createOrder_function():
         connection = get_db_connection()
         if not connection:
             response = {
-                "database error": "Cannot Connect to Database"
+                "error": "Cannot Connect to Database"
             }
             return jsonify(response), 500
         
