@@ -93,7 +93,7 @@ function App() {
             </div>
             <div className="home-title">Home</div>
             <div className="logout-container">
-              <button className="logout-button">Logout</button>
+              <Logout logout={logoutfunction} />
             </div>
           </div>
           <div className="menu-container">

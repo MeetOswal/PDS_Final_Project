@@ -15,19 +15,23 @@ body {
     align-items: center;
 }
 
-/* Welcome Message */
 .welcome-message {
-    font-size: 1.2rem;
+    font-size: 2rem;
     font-weight: bold;
-    color: #fff;
+    color: #007bff;
+    margin-bottom: 20px;
+    /* Add space below the message */
 }
 
 /* Centered Layout */
 .welcome-container {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    /* Full viewport height */
+    text-align: center;
 }
 
 .home-title {
