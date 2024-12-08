@@ -6,6 +6,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useContext } from "react";
 import { OrderContext } from "./orderContext";
+
+
 export function Orders() {
   const [isStaff, setIsStaff] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -87,6 +89,16 @@ export function Orders() {
     }
   };
 
+  const checkDelivery = () => {
+    if (orderData.deliveredBy === orderData.client){
+      setError('client and delivery partner cannot be same');
+      return false;
+    } else {
+      setError(null);
+      return true;
+    }
+  }
+
 
 
 
@@ -96,7 +108,7 @@ export function Orders() {
     setResult("");
     setError(null)
 
-    if (orderData.client && orderData.orderDate && orderData.deliveryDate && orderData.deliveredBy ) {
+    if (orderData.client && orderData.orderDate && orderData.deliveryDate && orderData.deliveredBy && checkDelivery()) {
       const itemIDs = items;
       const orderDate = new Date(orderData.orderDate).toISOString().split("T")[0];
       const deliveryDate = new Date(orderData.deliveryDate).toISOString().split("T")[0];
