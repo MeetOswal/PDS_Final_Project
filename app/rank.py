@@ -29,7 +29,8 @@ def rank_function():
             """
             cursor.execute(query, (start_date, end_date))
             result = cursor.fetchall()
-
+        if len(result) == 0:
+            result = []
         connection.close()
         if len(result) < 10:
             extras = [
