@@ -196,7 +196,7 @@ export function Orders() {
                     orderNotes: e.target.value,
                   }))
                 }
-                disabled = {!!items}
+                disabled = {items.length == 0}
               />
             </div>
             <br />
@@ -213,7 +213,7 @@ export function Orders() {
                   }))
                 }
                 required
-                disabled = {!!items}
+                disabled = {items.length == 0}
               />
             </div>
             <br />
@@ -230,7 +230,7 @@ export function Orders() {
                   }))
                 }
                 required
-                disabled = {!!items}
+                disabled = {items.length == 0}
               />
             </div>
             <br />
@@ -248,7 +248,7 @@ export function Orders() {
                 }
                 minDate={orderData.orderDate}
                 required
-                disabled = {!!items}
+                disabled = {items.length == 0}
               />
             </div>
             <br />
@@ -264,7 +264,7 @@ export function Orders() {
                     deliveredStatus: e.target.value,
                   }))
                 }
-                disabled = {!!items}
+                disabled = {items.length == 0}
                 required
               />
             </div>
