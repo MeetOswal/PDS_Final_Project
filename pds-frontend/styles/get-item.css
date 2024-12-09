@@ -1,7 +1,36 @@
+/* Top bar adjustments */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #007bff;
+    padding: 10px;
+    /* Increased padding for a taller bar */
+    color: white;
+    position: relative;
+    height: 45px;
+    /* Set a fixed height to make it taller */
+}
 
+#page-title {
+    font-size: 28px;
+    /* Slightly larger font for emphasis */
+    font-weight: bold;
+    text-align: center;
+    flex-grow: 1;
+    color: white;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Input container */
 .input-container {
     position: absolute;
-    top: 1%;
+    top: 80px;
+    /* Adjusted for the taller header */
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -38,9 +67,10 @@
     text-align: center;
 }
 
+/* Item details container */
 .item-details-container {
     position: absolute;
-    top: 150px;
+    top: 160px;
     left: 10%;
     width: 40%;
     font-size: 16px;
@@ -48,9 +78,10 @@
     color: #333;
 }
 
+/* Item image */
 .item-image {
     position: absolute;
-    top: 150px;
+    top: 160px;
     right: 10%;
     max-width: 40%;
     border: 1px solid #ccc;
@@ -76,19 +107,4 @@
 
 .piece-location div {
     margin-left: 8px;
-}
-
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-#page-title {
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-    flex-grow: 1;
-    color: #333;
 }
