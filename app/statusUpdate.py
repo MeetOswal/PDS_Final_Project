@@ -30,7 +30,7 @@ def statusUpdate_function():
         return jsonify({'message': 'Status Updated'}), 200
     
     except datababaseError as e:
-        return jsonify({'error' : str(e)}), 500
+        return jsonify({'error' : str(e).split(",")[1][2:-2]}), 500
     
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
