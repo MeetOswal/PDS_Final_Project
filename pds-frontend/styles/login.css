@@ -8,19 +8,6 @@ body {
 }
 
 /* Top Bar */
-.home-link {
-    position: absolute;
-    top: 10px;
-    left: 20px;
-    font-size: 1rem;
-    color: #007bff;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.home-link:hover {
-    color: #0056b3;
-}
 
 /* Page Title */
 .page-title {
