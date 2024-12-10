@@ -5,6 +5,8 @@ import { unescapeHTML } from "./utils";
 import { useContext } from "react";
 import { OrderContext } from "./orderContext";
 
+import "../styles/filters.css";
+
 export function Filter() {
   const { state } = useLocation();
   const [fetchResponse, setFetchResponse] = useState(null);
@@ -84,38 +86,65 @@ export function Filter() {
 
 
   return (
-    <div>
-      <Link to="/">Home</Link>
-      <br />
-      <Link to = "/order">Cart</Link>
-      <br />
-      <Link to="/categories">Select Categories</Link>
-      <h3>Items</h3>
-      
-      {error && <div>{error}</div>}
-      {fetchResponse &&
-        fetchResponse.map((item) =>
-          (
-            <div key={item.ItemID}>
-              {isStaff && client && (
-                <div>
-                  <button onClick={(e) => (addItem(item.ItemID))} disabled = {items.includes(item.ItemID)}>Add to cart</button>
-                </div>
-              )}
-              <div>Item Description : {unescapeHTML(item.iDescription)}</div>
-              <div><img src={`data:image/jpeg;base64,${item.photo}`} /></div>
-              <div><a onClick={() => nav("/get-item", {state :item.ItemID})}>Get More Info..</a></div>
-              <br />
-            </div>
-          )
-        )}
-        { prev && (
-          <button onClick={() => setPage(currentPage => currentPage - 1)}>Prev</button>
-          )
-        }
-        {next && (
-          <button onClick={() => setPage(currentPage => currentPage + 1)}>Next</button>
-        )}
+  <div className="filters-container">
+    <div className="navigation-bar">
+      <Link to="/" className="nav-button">Home</Link>
+      <Link to="/order" className="nav-button">Cart</Link>
+      <Link to="/categories" className="nav-button">Select Categories</Link>
     </div>
-  );
+
+    <h3 className="items-header">Items</h3>
+
+    {error && <div className="error-message">{error}</div>}
+
+    {fetchResponse && (
+      <div className="items-list">
+        {fetchResponse.map((item) => (
+          <div key={item.ItemID} className="item-card">
+            {isStaff && client && (
+              <div className="add-to-cart-container">
+                <button
+                  onClick={() => addItem(item.ItemID)}
+                  disabled={items.includes(item.ItemID)}
+                  className="add-to-cart-button"
+                >
+                  Add to cart
+                </button>
+              </div>
+            )}
+            <div className="item-container">
+              <div className="item-description">
+                Item Description: {unescapeHTML(item.iDescription)}
+              </div>
+              <div className="item-image-categories">
+                <img src={`data:image/jpeg;base64,${item.photo}`} alt="Item" />
+              </div>
+              <div className="more-info">
+                <a
+                  onClick={() => nav("/get-item", { state: item.ItemID })}
+                  className="more-info-link"
+                >
+                  Get More Info..
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+
+    <div className="pagination">
+      {prev && (
+        <button onClick={() => setPage((currentPage) => currentPage - 1)} className="pagination-button">
+          Prev
+        </button>
+      )}
+      {next && (
+        <button onClick={() => setPage((currentPage) => currentPage + 1)} className="pagination-button">
+          Next
+        </button>
+      )}
+    </div>
+  </div>
+);
 }
