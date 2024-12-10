@@ -27,6 +27,11 @@ export function Logout({ logout }) {
       setLoading(false);
     }
   };
+  if (loading){
+    return(
+      <div>Loading...</div>
+    )
+    }
   return (
     <>
       <button className="logout-button" onClick={handleSubmit}>Logout</button>

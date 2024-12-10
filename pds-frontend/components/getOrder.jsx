@@ -117,7 +117,6 @@ export function GetOrder() {
           withCredentials: true,
         }
       );
-        console.log(response);
         setDoUpdate(false)
     } catch (error) {
       console.log(error);
