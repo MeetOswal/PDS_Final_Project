@@ -34,7 +34,7 @@ export function Orders() {
     orderDate: new Date(),
     deliveredBy: "",
     deliveryDate: "",
-    deliveredStatus: "",
+    deliveredStatus: "New Order",
   }
   
   useEffect(() => {
