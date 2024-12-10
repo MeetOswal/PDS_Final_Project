@@ -162,7 +162,7 @@ def createOrder_function():
             connection.commit()
 
         connection.close()
-        return jsonify({'message' : 'Order Created'}) ,200  
+        return jsonify({'message' : f'Order Created {last_order_id}'}) ,200  
 
     except datababaseError as e:
         print(e)

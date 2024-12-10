@@ -159,7 +159,7 @@ def addDonation_function():
                 "error": "Cannot Connect to Database"
             }
             return jsonify(response), 500
-        
+        item_id = None
         with connection.cursor() as cursor:
             # Qurry to Create Item
             query = '''
@@ -171,7 +171,7 @@ def addDonation_function():
             
             # get greated item ID
             last_item_id = cursor.lastrowid
-
+            item_id = last_item_id
             # create Donation with username and itemID
             query2 = '''
             insert into DonatedBy (ItemID, userName, donateDate) values
@@ -191,7 +191,7 @@ def addDonation_function():
 
         connection.close()
 
-        return jsonify({'message' : 'Item Donated'}) ,200
+        return jsonify({'message' : f'Item Donated {last_item_id}'}) ,200
     
     except datababaseError as e:
         return jsonify({'error' : str(e)}), 500
