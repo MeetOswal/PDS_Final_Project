@@ -45,13 +45,11 @@ def getOrderHistory_function():
         select orderID, ItemID, iDescription
         from orderIDs natural join (itemin natural join item)
         """
-        
         with connection.cursor() as cursor:
             query = '''
-            with orderIDs as
-            (select distinct orderID, orderDate, client, supervisor, userName
-            from `ordered` natural join itemin natural join delivered
-            where client = %s or supervisor = %s or userName = %s)
+            with orderIDs as(select *
+            from ordered natural join itemin natural join delivered
+            where delivered.userName = %s or ordered.client = %s or ordered.supervisor = %s)
 
             select orderID, orderDate, ItemID, iDescription, client, supervisor, userName
             from (orderIDs natural join itemin) natural join item
@@ -64,7 +62,6 @@ def getOrderHistory_function():
         if not result:
             return jsonify({'error' : 'No Order History Found'}), 404
         else:
-
             order_data = {
                 'client' : username,
                 'orders' : []
@@ -73,14 +70,15 @@ def getOrderHistory_function():
                 order_details = {
                     'orderId' : key[0],
                     'orderDate' : key[1],
-                    'items' : []
+                    'items' : [],
+                    'as' : ["" , "" , ""]
                 }
                 if key[2] == username:
-                    order_details['as'] = 'Client'
-                elif key[3] == username:
-                    order_details['as'] = 'Supervisor'
-                else:
-                    order_details['as'] = 'Delivery Partner'
+                    order_details['as'][0] = 'Client'
+                if key[3] == username:
+                    order_details['as'][1] = 'Supervisor'
+                if key[4] == username:
+                    order_details['as'][2] = 'Delivery-Partner'
                 for item in group:
                     
                     order_details['items'].append({
