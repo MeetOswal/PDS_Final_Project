@@ -43,6 +43,7 @@ export function Donate() {
   const [isStaff, setIsStaff] = useState(false);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [disableTrue, setDisableTrue] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [mainCategory, setMainCategory] = useState({
     options: [],
@@ -86,6 +87,7 @@ export function Donate() {
   }, []);
 
   const checkDonor = async (e) => {
+    setError(null)
     e.preventDefault();
     if (itemData.donor.length > 0) {
       try {
@@ -97,6 +99,7 @@ export function Donate() {
             withCredentials: true,
           }
         );
+        setDisableTrue(true)
         setIsDonor(true);
         try {
           const response = await axios.get(
@@ -324,6 +327,7 @@ export function Donate() {
               donor: e.target.value,
             }))
           }
+          disabled = {disableTrue}
           required
         />
         <button onClick={(e) => checkDonor(e)} className="form-button">

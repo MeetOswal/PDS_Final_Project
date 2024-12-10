@@ -10,7 +10,7 @@ export function OrderHistory() {
   const [client, setClient] = useState(null);
   const [orders, setOrders] = useState([]);
   const [error, setError] = useState(null);
-  const [filter, setFilter] = useState(['Client', 'Supervisor', 'Delivery'])
+  const [filter, setFilter] = useState(['Client', 'Supervisor', 'Delivery-Partner'])
   const [loading, setLoading] = useState(true);
   const nav = useNavigate();
 
@@ -26,7 +26,7 @@ export function OrderHistory() {
 
         setClient(response.data.client);
         setOrders(response.data.orders);
-
+        console.log(response.data.orders);
       } catch (error) {
         if (error.response && error.response.data.error == 'User not logined'){
             nav("/login")
@@ -87,8 +87,8 @@ return (
           <input
             type="checkbox"
             id="filter-delivery"
-            onChange={(e) => roleFilter('Delivery')}
-            checked={filter.includes('Delivery')}
+            onChange={(e) => roleFilter('Delivery-Partner')}
+            checked={filter.includes('Delivery-Partner')}
             className="filter-checkbox"
           />
           <label htmlFor="filter-delivery" className="filter-label">Delivery Partner</label>
@@ -104,7 +104,7 @@ return (
         <hr className="separator" />
         {orders.map((order) => {
           return (
-            filter.includes(order.as) && (
+            (filter.includes(order.as[0]) || filter.includes(order.as[1]) || filter.includes(order.as[2])) && (
               <div key={order.orderId} className="order-item">
                 <div className="order-info">
                   <span className="order-id">Order Id:</span> {order.orderId}
@@ -113,7 +113,9 @@ return (
                   <span className="order-date">Order Date:</span> {order.orderDate}
                 </div>
                 <div className="order-info">
-                  <span className="order-as">As:</span> {order.as}
+                  <span className="order-as">As:</span> {
+                    order.as.map((as) => ((as.length > 0) && (<span>{as} </span>) ))
+                  }
                 </div>
                 <div className="order-items">
                   {order.items.map((item) => (
