@@ -16,26 +16,26 @@ export function Orders() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
-  const { items, addItem, addClient, client, deleteAll } = useContext(OrderContext);
+  const { items, addItem, addClient, client, deleteAll, orderDetail, addOrderDetails } = useContext(OrderContext);
   const nav = useNavigate();
 
   const [orderData, setOrderData] = useState({
     client: "",
-    orderNotes: "",
-    orderDate: "",
-    deliveredBy: "",
-    deliveryDate: "",
-    deliveredStatus: "",
+    orderNotes: orderDetail.orderNotes,
+    orderDate: new Date(),
+    deliveredBy: orderDetail.deliveredBy,
+    deliveryDate: orderDetail.deliveredDate,
+    deliveredStatus: orderDetail.deliveredStatus,
   });
 
   const empty = {
-        client: "",
-        orderNotes: "",
-        orderDate: "",
-        deliveredBy: "",
-        deliveryDate: "",
-        deliveredStatus: "",
-      }
+    client: "",
+    orderNotes: "",
+    orderDate: new Date(),
+    deliveredBy: "",
+    deliveryDate: "",
+    deliveredStatus: "",
+  }
   
   useEffect(() => {
     const checkStaff = async () => {
@@ -63,6 +63,7 @@ export function Orders() {
       }))
       setIsClient(true);
     }
+
   }, []);
 
   const checkClient = async (e) => {
@@ -141,7 +142,6 @@ export function Orders() {
         
 
       } catch (error) {
-        console.log(error);
         setError(error.response.data.error);
       } finally {
         setLoading(false);
@@ -150,6 +150,13 @@ export function Orders() {
         setLoading(false);
     }
   };
+
+  useEffect(() => {
+    addOrderDetails('orderNotes' , orderData.orderNotes)
+    addOrderDetails('deliveredBy', orderData.deliveredBy)
+    addOrderDetails('deliveredDate', orderData.deliveryDate)
+    addOrderDetails('deliveredStatus', orderData.deliveredStatus)
+  }, [orderData])
 
   if (!isStaff) {
     return (
@@ -205,7 +212,6 @@ export function Orders() {
               <DatePicker
                 selected={orderData.orderDate}
                 className="datepicker-order-date"
-                placeholderText="MM/DD/YYYY"
                 onChange={(date) =>
                   setOrderData((currentState) => ({
                     ...currentState,
@@ -213,7 +219,7 @@ export function Orders() {
                   }))
                 }
                 required
-                disabled = {items.length == 0}
+                disabled = {true}
               />
             </div>
             <br />

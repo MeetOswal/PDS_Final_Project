@@ -5,7 +5,17 @@ export const OrderContext = createContext();
 export const OrderProvider = ({ children }) => {
   const [items, setItems] = useState([]);
   const [client, setClient] = useState(null)
-  
+  const [orderDetail, setOrderDetail] = useState({
+    orderNotes : "",
+    deliveredBy : "",
+    deliveredDate : "",
+    deliveredStatus : "New Order",
+  })
+
+  const addOrderDetails = (category, value) => {
+    setOrderDetail((currentState) => ({...currentState, [category] : value}))
+    return
+  }
   const addItem = (itemID) =>
     setItems((currentContext) => {
       if (currentContext.includes(itemID)) {
@@ -18,13 +28,20 @@ export const OrderProvider = ({ children }) => {
     const deleteAll = () => {
       setItems([]);
       setClient(null);
+      setOrderDetail((currentState) => ({
+        ...currentState,
+        orderNotes : "",
+        deliveredBy : "",
+        deliveredDate : "",
+        deliveredStatus : "New Order",
+      }))
       return
     }
   
     const addClient = (username) => setClient(username) 
 
   return (
-    <OrderContext.Provider value={{ items, addItem, addClient, client, deleteAll }}>
+    <OrderContext.Provider value={{ items, addItem, addClient, client, deleteAll, orderDetail, addOrderDetails }}>
       {children}
     </OrderContext.Provider>
   );
