@@ -81,7 +81,7 @@ function App() {
     <div className="app-container">
       {!loggedIn ? (
         <div className="welcome-container">
-          <div className="welcome-message">Welcome, {unescapeHTML(userData)}</div>
+          <div className="welcome-message">Welcome, User</div>
           <div className="centered-button">
             <Link to="/login" className="auth-button">Login</Link>
           </div>
@@ -90,7 +90,7 @@ function App() {
         <div className="logged-in-layout">
           <div className="top-bar">
             <div className="welcome-container">
-              <span className="welcome-message">Welcome, Meet</span>
+              <span className="welcome-message">Welcome, {unescapeHTML(userData)}</span>
             </div>
             <div className="home-title">Home</div>
             <div className="logout-container">
