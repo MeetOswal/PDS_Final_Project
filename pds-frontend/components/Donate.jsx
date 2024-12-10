@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { sanitizeInput } from "./utils";
 
+import "../styles/donate.css";
+
 export function Donate() {
   const [itemData, setItemData] = useState({
     donor: "",
@@ -307,12 +309,17 @@ export function Donate() {
   }
 
   return (
-    <>
-      <Link to="/">Home</Link>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="donor">Donator </label>
+  <div className="donate-container">
+    <div className="donation-top-bar">
+      <Link to="/" className="home-link">Home</Link>
+      <h2 className="donation-title">Donation Form</h2>
+    </div>
+    <form onSubmit={handleSubmit} className="donate-form">
+      <div className="form-group">
+        <label htmlFor="donor" className="form-label">Donator</label>
         <input
           type="text"
+          className="form-input"
           value={itemData.donor}
           onChange={(e) =>
             setItemData((currentState) => ({
@@ -323,13 +330,20 @@ export function Donate() {
           disabled = {disableTrue}
           required
         />
-        <button onClick={(e) => checkDonor(e)}>Enter Donor</button>
-        <br />
-        {isDonor && (
-          <>
-            <label htmlFor="iDescription">Item Description </label>
+        <button onClick={(e) => checkDonor(e)} className="form-button">
+          Enter Donor
+        </button>
+      </div>
+      <br />
+      {isDonor && (
+        <div className="donor-details">
+          <div className="form-group">
+            <label htmlFor="iDescription" className="form-label">
+              Item Description
+            </label>
             <input
               type="text"
+              className="form-input"
               value={itemData.iDescription}
               onChange={(e) =>
                 setItemData((currentState) => ({
@@ -339,10 +353,13 @@ export function Donate() {
               }
               required
             />
-            <br />
-            <label htmlFor="color">Item Color </label>
+          </div>
+          <br />
+          <div className="form-group">
+            <label htmlFor="color" className="form-label">Item Color</label>
             <input
               type="text"
+              className="form-input"
               value={itemData.color}
               onChange={(e) =>
                 setItemData((currentState) => ({
@@ -351,32 +368,43 @@ export function Donate() {
                 }))
               }
             />
-
-            <div>
-              <div>Item Is New?</div>
-              <label htmlFor="isNew">Yes</label>
+          </div>
+          <div className="form-group">
+            <div className="form-subgroup">
+              <span className="form-text">Item Is New?</span>
+              <label htmlFor="isNew" className="form-label">
+                Yes
+              </label>
               <input
-                type="checkBox"
+                type="checkbox"
+                className="form-checkbox"
                 onChange={() =>
                   setItemData((currentState) => ({ ...currentState, isNew: 1 }))
                 }
                 checked={itemData.isNew == 1}
               />
-              <label htmlFor="isNew">No</label>
+              <label htmlFor="isNew" className="form-label">
+                No
+              </label>
               <input
-                type="checkBox"
+                type="checkbox"
+                className="form-checkbox"
                 onChange={() =>
                   setItemData((currentState) => ({ ...currentState, isNew: 0 }))
                 }
                 checked={itemData.isNew == 0}
               />
             </div>
-
-            <div>
-              <div>Has Pieces (More than 1)</div>
-              <label htmlFor="hasPieces">Yes</label>
+          </div>
+          <div className="form-group">
+            <div className="form-subgroup">
+              <span className="form-text">Has Pieces (More than 1)</span>
+              <label htmlFor="hasPieces" className="form-label">
+                Yes
+              </label>
               <input
-                type="checkBox"
+                type="checkbox"
+                className="form-checkbox"
                 onChange={() =>
                   setItemData((currentState) => ({
                     ...currentState,
@@ -385,9 +413,12 @@ export function Donate() {
                 }
                 checked={itemData.hasPieces == 1}
               />
-              <label htmlFor="hasPieces">No</label>
+              <label htmlFor="hasPieces" className="form-label">
+                No
+              </label>
               <input
-                type="checkBox"
+                type="checkbox"
+                className="form-checkbox"
                 onChange={() =>
                   setItemData((currentState) => ({
                     ...currentState,
@@ -397,10 +428,12 @@ export function Donate() {
                 checked={itemData.hasPieces == 0}
               />
             </div>
-
-            <label htmlFor="material">Item material</label>
+          </div>
+          <div className="form-group">
+            <label htmlFor="material" className="form-label">Item Material</label>
             <input
               type="text"
+              className="form-input"
               value={itemData.material}
               onChange={(e) =>
                 setItemData((currentState) => ({
@@ -409,10 +442,13 @@ export function Donate() {
                 }))
               }
             />
-            <br />
-            <label htmlFor="mainCategory">Category</label>
+          </div>
+          <br />
+          <div className="form-group">
+            <label htmlFor="mainCategory" className="form-label">Category</label>
             <select
               id="mainCategory"
+              className="form-select"
               value={mainCategory.selected}
               onChange={(e) => handleCategoryChange(e)}
             >
@@ -423,11 +459,13 @@ export function Donate() {
                 </option>
               ))}
             </select>
-
-            <br />
-            <label htmlFor="subCategory">Sub Category</label>
+          </div>
+          <br />
+          <div className="form-group">
+            <label htmlFor="subCategory" className="form-label">Sub Category</label>
             <select
               id="subCategory"
+              className="form-select"
               value={subCategory.selected}
               onChange={(e) =>
                 setSubCategory((currentState) => ({
@@ -444,107 +482,111 @@ export function Donate() {
                 </option>
               ))}
             </select>
-            <br />
-            <br />
-            <div>Pieces</div>
+          </div>
+          <br />
+          <div className="pieces-container">
+            <div className="form-text">Pieces</div>
             {pieceFields.map((field) => {
               return (
-                <div key={field.pieceNum}>
-                  <label htmlFor={`piece-${field.pieceNum}-pDescription`}>
+                <div key={field.pieceNum} className="piece-field">
+                  <label htmlFor={`piece-${field.pieceNum}-pDescription`} className="form-label">
                     Piece Description
                   </label>
                   <input
                     type="text"
                     id={`piece-${field.pieceNum}-pDescription`}
+                    className="form-input"
                     value={field.pDescription}
                     onChange={(e) =>
-                      onPieceChange(
-                        field.pieceNum,
-                        "pDescription",
-                        e.target.value
-                      )
+                      onPieceChange(field.pieceNum, "pDescription", e.target.value)
                     }
                     required
                   />
-
                   <br />
-                  <label htmlFor={`piece-${field.pieceNum}`}>
+                  <label htmlFor={`piece-${field.pieceNum}-Length`} className="form-label">
                     Piece Length
                   </label>
                   <input
                     type="text"
                     id={`piece-${field.pieceNum}-Length`}
+                    className="form-input"
                     value={field.Length}
                     onChange={(e) =>
                       onPieceChange(field.pieceNum, "Length", e.target.value)
                     }
                   />
-
                   <br />
-                  <label htmlFor={`piece-${field.pieceNum}`}>Piece Width</label>
+                  <label htmlFor={`piece-${field.pieceNum}-width`} className="form-label">
+                    Piece Width
+                  </label>
                   <input
                     type="text"
                     id={`piece-${field.pieceNum}-width`}
+                    className="form-input"
                     value={field.width}
                     onChange={(e) =>
                       onPieceChange(field.pieceNum, "width", e.target.value)
                     }
                   />
-
                   <br />
-                  <label htmlFor={`piece-${field.pieceNum}`}>
+                  <label htmlFor={`piece-${field.pieceNum}-height`} className="form-label">
                     Piece Height
                   </label>
                   <input
                     type="text"
                     id={`piece-${field.pieceNum}-height`}
+                    className="form-input"
                     value={field.height}
                     onChange={(e) =>
                       onPieceChange(field.pieceNum, "height", e.target.value)
                     }
                   />
-
                   <br />
-                  <label htmlFor={`piece-${field.pieceNum}`}>
+                  <label htmlFor={`piece-${field.pieceNum}-roomNum`} className="form-label">
                     Piece Room Location
                   </label>
                   <input
                     type="text"
                     id={`piece-${field.pieceNum}-roomNum`}
+                    className="form-input"
                     value={field.roomNum}
                     onChange={(e) =>
                       onPieceChange(field.pieceNum, "roomNum", e.target.value)
                     }
                     required
                   />
-
                   <br />
-                  <label htmlFor={`piece-${field.pieceNum}`}>
+                  <label htmlFor={`piece-${field.pieceNum}-shelfNum`} className="form-label">
                     Piece Shelf Location
                   </label>
                   <input
                     type="text"
                     id={`piece-${field.pieceNum}-shelfNum`}
+                    className="form-input"
                     value={field.shelfNum}
                     onChange={(e) =>
                       onPieceChange(field.pieceNum, "shelfNum", e.target.value)
                     }
                     required
                   />
-
                   <br />
-                  <label htmlFor={`piece-${field.pieceNum}`}>Piece Notes</label>
+                  <label htmlFor={`piece-${field.pieceNum}-pNotes`} className="form-label">
+                    Piece Notes
+                  </label>
                   <input
                     type="text"
                     id={`piece-${field.pieceNum}-pNotes`}
+                    className="form-input"
                     value={field.pNotes}
                     onChange={(e) =>
                       onPieceChange(field.pieceNum, "pNotes", e.target.value)
                     }
                   />
-
                   {field.pieceNum !== 1 && (
-                    <a onClick={() => removePieceField(field.pieceNum)}>
+                    <a
+                      onClick={() => removePieceField(field.pieceNum)}
+                      className="remove-piece-link"
+                    >
                       Delete
                     </a>
                   )}
@@ -553,35 +595,42 @@ export function Donate() {
                 </div>
               );
             })}
-
             <div>
-              <a onClick={addPieceField}>Add Piece</a>
+              <a onClick={addPieceField} className="add-piece-link">
+                Add Piece
+              </a>
             </div>
-            <div>
-              <label htmlFor="image">Upload Image</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                required
-              />
-              {imagePreview && (
-                <div>
-                  <div htmlFor="imagePreview">Image Preview</div>
-                  <img
-                    src={imagePreview}
-                    alt="Preview"
-                    style={{ width: "300px", height: "auto" }}
-                  />
-                </div>
-              )}
-            </div>
-            <button type="submit"> {!loading ? "Register" : "Sending"}</button>
-          </>
-        )}
-      </form>
-      {error && <div>{error}</div>}
-      {result && <div>{result}</div>}
-    </>
-  );
+          </div>
+          <div className="form-group">
+            <label htmlFor="image" className="form-label">
+              Upload Image
+            </label>
+            <input
+              type="file"
+              className="form-input"
+              accept="image/*"
+              onChange={handleImageUpload}
+              required
+            />
+            {imagePreview && (
+              <div className="image-preview-container">
+                <div className="image-preview-label">Image Preview</div>
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="image-preview"
+                />
+              </div>
+            )}
+          </div>
+          <button type="submit" className="submit-button">
+            {!loading ? "Register" : "Sending"}
+          </button>
+        </div>
+      )}
+    </form>
+    {error && <div className="error-message">{error}</div>}
+    {result && <div className="result-message">{result}</div>}
+  </div>
+);
 }
