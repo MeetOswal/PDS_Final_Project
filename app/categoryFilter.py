@@ -110,7 +110,7 @@ def categoryFilter(page):
             Sample:
 
             select *
-            from item natural left join itemin
+            from (item natural join piece) natural left join itemin
             where orderID is null and 
             (( mainCategory = 'Books' and subCategory in ( 'Comedy' )) or 
             ( mainCategory = 'Clothing' and subCategory in ('Men')))
@@ -120,7 +120,7 @@ def categoryFilter(page):
             '''
             query = '''
             select * 
-            from item natural left join itemin
+            from (item natural join piece) natural left join itemin
             where orderID is null
             '''
             if data: # in case not filter applied
